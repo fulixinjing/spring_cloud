@@ -1,18 +1,49 @@
 package test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
 
 public class Test {
 	public static void main(String[] args) {
-		  BigDecimal loanLimit=new BigDecimal(36);
-		  BigDecimal loanRate =new BigDecimal(0.88).divide(new BigDecimal(100),8,BigDecimal.ROUND_HALF_UP);         // 借款利率
-		BigDecimal _temp1 = (loanRate.add(new BigDecimal(1))).pow(loanLimit.intValue());//（1+月利率）^借款期限
-		 BigDecimal _temp2 = _temp1.subtract(new BigDecimal(1));
-		 BigDecimal auditMonthPaymoney = new BigDecimal(60310).multiply(new BigDecimal(0.0088)).multiply(_temp1).divide(_temp2,2,BigDecimal.ROUND_HALF_UP); 
-		System.out.println(auditMonthPaymoney);
+	/*	BigDecimal auditAmount = new BigDecimal(66000.00).divide(new BigDecimal(1.10740000),2,BigDecimal.ROUND_HALF_UP);
+		System.out.println(auditAmount);*/
+		
+		/*String aa="33333333;ssss";
+		for(String a : aa.split(";")){
+			System.out.println(a);
+		}*/
+	/*	List<String> a =new ArrayList<String>();
+		a.add("ddd");
+		a.add("cccc");
+		System.out.println(a.toString());*/
+	/*	String [][] fileNames =new String[][]{{"222","xxx"}};
+		for(String[] fileName : fileNames){
+			System.out.println(fileName[0]);
+			System.out.println(fileName[1]);
+		}*/
+		String a =aa();
+		
+		System.out.println(a);
+	}
+
+	private static String aa() {
+		String a="aaa";
+		try{
+			return a;
+		}catch(Exception e){
+			
+		}finally{
+			a="bbb";
+			System.out.println(a);
+		}
+		System.out.println("ddd");
+		return "ccc";
 	}
 }
