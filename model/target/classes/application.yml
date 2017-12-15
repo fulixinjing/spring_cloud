@@ -1,0 +1,57 @@
+#选择生效的代码块
+spring: 
+ profiles: 
+  active: dev
+ datasource:
+  url: jdbc:mysql://localhost:3306/test
+  username: root
+  password: 123456   
+  driverClassName: com.mysql.jdbc.Driver
+ jpa:
+  database: MYSQL
+#控制台显示sql
+  show-sql: true
+  properties:
+   hibernate:
+#配置表名，数据库的表和列会自动创建
+    hbm2ddl:
+     auto: update
+   naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+   dialect: org.hibernate.dialect.MySQL5Dialect
+#中文格式乱码
+ http: 
+  encoding: 
+   force: true
+# 页面默认前缀目录
+ mvc:
+  view:
+   prefix: /WEB-INF/jsp/
+# 响应页面默认后缀
+   suffix: .jsp 
+
+# ---分隔符，分隔代码块
+---
+spring: 
+ profiles: dev
+db: 
+ url: 2333
+ username: sa
+ password: 222
+tx: 
+ name: 付立新
+ sex: man
+ age: 25
+name: 444
+
+---
+spring: 
+ profiles: test
+db: 
+ url: 2333
+ username: sa
+ password: 222
+tx: 
+ name: mhp
+ sex: girl
+ age: 24
+name: 333
