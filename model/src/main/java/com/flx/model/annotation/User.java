@@ -4,11 +4,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class User {
-	@ValidateAnnotation
 	private String name;
 	
 	private String sex;
 	
+	@ValidateAnnotation(max = 40,message = "哈哈，太大了")
 	private int age;
 
 	public String getName() {

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.OALeaveDao">
+	<resultMap type="cn.taskSys.entity.OALeave" id="OALeave_Result_Map">
+		<result column="oa_id" property="oa_id" />
+		<result column="leave_person" property="leave_person" />
+		<result column="emp_code" property="emp_code" />
+		<result column="operator" property="operator" />
+		<result column="company" property="company" />
+		<result column="department" property="department" />
+		<result column="post" property="post" />
+		<result column="apply_time" property="apply_time" />
+		<result column="type" property="type" />
+		<result column="taking_work_time" property="taking_work_time" />
+		<result column="start_date" property="start_date" />
+		<result column="end_date" property="end_date" />
+		<result column="start_time" property="start_time" />
+		<result column="end_time" property="end_time" />
+		<result column="days" property="days" />
+		<result column="add_time" property="add_time" />
+		<result column="in_type" property="in_type" />
+		<result column="is_update" property="is_update" />
+	</resultMap>
+	<resultMap type="cn.taskSys.entity.OAOut" id="OAOut_Result_Map">
+		<result column="oa_id" property="oa_id" />
+		<result column="out_person" property="out_person" />
+		<result column="company" property="company" />
+		<result column="department" property="department" />
+		<result column="apply_time" property="apply_time" />
+		<result column="start_date" property="start_date" />
+		<result column="end_date" property="end_date" />
+		<result column="start_time" property="start_time" />
+		<result column="end_time" property="end_time" />
+		<result column="un_punch_moring" property="un_punch_moring" />
+		<result column="un_punch_afternoon" property="un_punch_afternoon" />
+		<result column="add_time" property="add_time" />
+		<result column="emp_code" property="emp_code"/>
+		<result column="in_type" property="in_type" />
+		<result column="is_update" property="is_update" />
+	</resultMap>
+	<resultMap type="cn.taskSys.entity.OAOnBusiness" id="OAOnBusiness_Result_Map">
+		<result column="oa_id" property="oa_id" />
+		<result column="on_business_person" property="on_business_person" />
+		<result column="company" property="company" />
+		<result column="department" property="department" />
+		<result column="apply_time" property="apply_time" />
+		<result column="start_site" property="start_site" />
+		<result column="on_business_site" property="on_business_site" />
+		<result column="is_companion" property="is_companion" />
+		<result column="companion" property="companion" />
+		<result column="companion_sex" property="companion_sex" />
+		<result column="start_date" property="start_date" />
+		<result column="start_time" property="start_time" />
+		<result column="traffic_tool" property="traffic_tool" />
+		<result column="schedule" property="schedule" />
+		<result column="back_date" property="back_date" />
+		<result column="back_time" property="back_time" />
+		<result column="pre_days" property="pre_days" />
+		<result column="back_traffic_tool" property="back_traffic_tool" />
+		<result column="back_shcedule" property="back_shcedule" />
+		<result column="add_time" property="add_time" />
+		<result column="emp_code" property="emp_code"/>
+		<result column="in_type" property="in_type" />
+		<result column="is_update" property="is_update" />
+	</resultMap>
+	<!-- OALeave -->
+	<insert id="saveOALeave" parameterType="java.util.List">
+		INSERT INTO oa_leave
+	    	(oa_id, leave_person, emp_code, operator, company, department, post, apply_time, type, taking_work_time, start_date, end_date, start_time, end_time, days, add_time,in_type,is_update)        
+	    VALUES 
+	    <foreach item="oALeave" collection="list" index="index" separator=",">
+			(#{oALeave.oa_id}, #{oALeave.leave_person}, #{oALeave.emp_code}, #{oALeave.operator}, #{oALeave.company}, #{oALeave.department}, #{oALeave.post}, #{oALeave.apply_time}, #{oALeave.type}, #{oALeave.taking_work_time}, #{oALeave.start_date}, #{oALeave.end_date}, #{oALeave.start_time}, #{oALeave.end_time}, #{oALeave.days}, #{oALeave.add_time}, '1', #{oALeave.is_update})
+		</foreach>
+	</insert>
+	<!-- 分页列表 -->
+	<select id="getOALeaveList" parameterType="cn.taskSys.entity.OALeave" resultType="cn.taskSys.entity.OALeave">
+		select z.* from (select * from oa_leave where in_type='1'
+			<if test="leave_person != null and leave_person != '' ">
+				and leave_person like '%${leave_person}%'
+			</if>
+			<if test="emp_code != null and emp_code != '' ">
+				and emp_code = #{emp_code}
+			</if>
+			<if test="apply_time_start != null and apply_time_start != '' ">
+				<![CDATA[ and apply_time >= #{apply_time_start} ]]>
+			</if>
+			<if test="apply_time_end != null and apply_time_end != '' ">
+				<![CDATA[ and apply_time <= #{apply_time_end} ]]>
+			</if>
+			ORDER BY apply_time desc
+		)z  LIMIT 			 
+			 <![CDATA[ #{maxResult} OFFSET ( #{page} - 1)*#{maxResult}   ]]>
+	</select>
+	<select id="getOALeaveListCount" parameterType="cn.taskSys.entity.OALeave" resultType="java.lang.Integer">
+		select count(*) from (select * from oa_leave where in_type='1'
+			<if test="leave_person != null and leave_person != '' ">
+				and leave_person like '%${leave_person}%'
+			</if>
+			<if test="emp_code != null and emp_code != '' ">
+				and emp_code = #{emp_code}
+			</if>
+			<if test="apply_time_start != null and apply_time_start != '' ">
+				<![CDATA[ and apply_time >= #{apply_time_start} ]]>
+			</if>
+			<if test="apply_time_end != null and apply_time_end != '' ">
+				<![CDATA[ and apply_time <= #{apply_time_end} ]]>
+			</if>
+		) ky
+	</select>
+	<select id="getUnUpdateLeaveList" parameterType="cn.taskSys.entity.OALeave" resultType="cn.taskSys.entity.OALeave">
+		select * from oa_leave where in_type='1' and is_update='0'
+	</select>
+	<update id="updateLeaveById" parameterType="java.util.List">
+		update oa_leave set is_update = '1' where oa_id in 
+		<foreach item="oALeave" collection="list" open="(" separator="," close=")">
+			#{oALeave.oa_id}
+		</foreach>
+	</update>
+	
+	<!-- OAOut -->
+	<insert id="saveOAOut" parameterType="java.util.List">
+		INSERT INTO oa_out
+	    	(oa_id,out_person,company,department,apply_time,start_date,end_date,start_time,end_time,un_punch_moring,un_punch_afternoon,add_time,emp_code,in_type,is_update)        
+	    VALUES 
+	    <foreach item="oAOut" collection="list" index="index" separator=",">
+			(#{oAOut.oa_id}, #{oAOut.out_person}, #{oAOut.company}, #{oAOut.department}, #{oAOut.apply_time}, #{oAOut.start_date}, #{oAOut.end_date}, #{oAOut.start_time}, #{oAOut.end_time}, #{oAOut.un_punch_moring}, #{oAOut.un_punch_afternoon}, #{oAOut.add_time}, #{oAOut.emp_code}, '2',#{oAOut.is_update})
+		</foreach>
+	</insert>
+	<select id="getOAOutList" parameterType="cn.taskSys.entity.OAOut" resultType="cn.taskSys.entity.OAOut">
+		select z.* from (select * from oa_out where in_type='2'
+			<if test="out_person != null and out_person != '' ">
+				and out_person like '%${out_person}%'
+			</if>
+			<if test="emp_code != null and emp_code != '' ">
+				and emp_code = #{emp_code}
+			</if>
+			<if test="apply_time_start != null and apply_time_start != '' ">
+				<![CDATA[ and apply_time >= #{apply_time_start} ]]>
+			</if>
+			<if test="apply_time_end != null and apply_time_end != '' ">
+				<![CDATA[ and apply_time <= #{apply_time_end} ]]>
+			</if>
+			ORDER BY apply_time desc
+		)z  LIMIT 			 
+			 <![CDATA[ #{maxResult} OFFSET ( #{page} - 1)*#{maxResult}   ]]>
+	</select>
+	<select id="getOAOutListCount" parameterType="cn.taskSys.entity.OAOut" resultType="java.lang.Integer">
+		select count(*) from (select * from oa_out where in_type='2'
+			<if test="out_person != null and out_person != '' ">
+				and out_person like '%${out_person}%'
+			</if>
+			<if test="emp_code != null and emp_code != '' ">
+				and emp_code = #{emp_code}
+			</if>
+			<if test="apply_time_start != null and apply_time_start != '' ">
+				<![CDATA[ and apply_time >= #{apply_time_start} ]]>
+			</if>
+			<if test="apply_time_end != null and apply_time_end != '' ">
+				<![CDATA[ and apply_time <= #{apply_time_end} ]]>
+			</if>
+		) ky
+	</select>
+	<select id="getUnUpdateOutList" parameterType="cn.taskSys.entity.OAOut" resultType="cn.taskSys.entity.OAOut">
+		select * from oa_out where in_type='2' and is_update = '0'
+	</select>
+	<update id="updateOutById" parameterType="java.util.List">
+		update oa_out set is_update = '1' where oa_id in 
+		<foreach item="oAOut" collection="list" open="(" separator="," close=")">
+			#{oAOut.oa_id}
+		</foreach>
+	</update>
+	
+	<!-- OAOnBusiness -->
+	<insert id="saveOAOnBusiness" parameterType="java.util.List">
+		INSERT INTO oa_on_business
+	    	(oa_id, on_business_person, company, department, apply_time, start_site, on_business_site, is_companion, companion, companion_sex, start_date, start_time, traffic_tool, schedule, back_date, back_time,pre_days, back_traffic_tool, back_shcedule, add_time,emp_code,in_type,is_update)       
+	    VALUES 
+	    <foreach item="oAOnBusiness" collection="list" index="index" separator=",">
+			(#{oAOnBusiness.oa_id}, #{oAOnBusiness.on_business_person}, #{oAOnBusiness.company}, #{oAOnBusiness.department}, #{oAOnBusiness.apply_time}, #{oAOnBusiness.start_site}, #{oAOnBusiness.on_business_site}, #{oAOnBusiness.is_companion}, #{oAOnBusiness.companion}, #{oAOnBusiness.companion_sex}, #{oAOnBusiness.start_date}, #{oAOnBusiness.start_time}, #{oAOnBusiness.traffic_tool}, #{oAOnBusiness.schedule}, #{oAOnBusiness.back_date}, #{oAOnBusiness.back_time}, #{oAOnBusiness.pre_days}, #{oAOnBusiness.back_traffic_tool}, #{oAOnBusiness.back_shcedule}, #{oAOnBusiness.add_time}, #{oAOnBusiness.emp_code}, '3', #{oAOnBusiness.is_update})
+		</foreach>
+	</insert>
+	<select id="getOAOnBusinessList" parameterType="cn.taskSys.entity.OAOnBusiness" resultType="cn.taskSys.entity.OAOnBusiness">
+		select z.* from (select * from oa_on_business where in_type='3'
+			<if test="on_business_person != null and on_business_person != '' ">
+				and on_business_person like '%${on_business_person}%'
+			</if>
+			<if test="emp_code != null and emp_code != '' ">
+				and emp_code = #{emp_code}
+			</if>
+			<if test="apply_time_start != null and apply_time_start != '' ">
+				<![CDATA[ and apply_time >= #{apply_time_start} ]]>
+			</if>
+			<if test="apply_time_end != null and apply_time_end != '' ">
+				<![CDATA[ and apply_time <= #{apply_time_end} ]]>
+			</if>
+			ORDER BY apply_time desc
+		)z  LIMIT 			 
+			 <![CDATA[ #{maxResult} OFFSET ( #{page} - 1)*#{maxResult}   ]]>
+	</select>
+	<select id="getOAOnBusinessListCount" parameterType="cn.taskSys.entity.OAOnBusiness" resultType="java.lang.Integer">
+		select count(*) from (select * from oa_on_business where in_type='3'
+			<if test="on_business_person != null and on_business_person != '' ">
+				and on_business_person like '%${on_business_person}%'
+			</if>
+			<if test="emp_code != null and emp_code != '' ">
+				and emp_code = #{emp_code}
+			</if>
+			<if test="apply_time_start != null and apply_time_start != '' ">
+				<![CDATA[ and apply_time >= #{apply_time_start} ]]>
+			</if>
+			<if test="apply_time_end != null and apply_time_end != '' ">
+				<![CDATA[ and apply_time <= #{apply_time_end} ]]>
+			</if>
+		) ky
+	</select>
+	<select id="getUnUpdateOnBusinessList" parameterType="cn.taskSys.entity.OAOnBusiness" resultType="cn.taskSys.entity.OAOnBusiness">
+		select * from oa_on_business where in_type='3' and is_update = '0'
+	</select>
+	<update id="updateOnBusinessById" parameterType="java.util.List">
+		update oa_on_business set is_update = '1' where oa_id in 
+		<foreach item="oAOnBusiness" collection="list" open="(" separator="," close=")">
+			#{oAOnBusiness.oa_id}
+		</foreach>
+	</update>
+</mapper>
+
+
+
+
+

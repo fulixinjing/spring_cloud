@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.UtilsDao">
+    <!-- 取得字典列表  -->
+	<select id="getDictionaryList" resultType="Dictionary" parameterType="map">
+		select * from JX_GLOBE_DICTIONARY g
+		where 1=1
+		<if test="type != null">
+				and g.TYPE_CODE = #{type}
+		</if>
+		<if test="parentId != null">
+				and g.PARENT_ID = #{parentId}
+		</if>
+		order by id
+	</select>
+	<select id="getDictionary" resultType="Dictionary" parameterType="map">
+		select * from JX_GLOBE_DICTIONARY g
+		where 1=1
+		<if test="type != null">
+				and g.TYPE_CODE = #{type}
+		</if>
+		<if test="code != null">
+				and g.code = #{code}
+		</if>
+		<if test="id != null and id != '' ">
+				and g.id = #{id}
+		</if>
+	</select>
+	<!-- 字典列表  -->
+	<select id="getDictionaryList2" resultType="Dictionary" parameterType="map">
+		select a.*,b.name parent_name from jx_globe_dictionary a left join jx_globe_dictionary b on 
+		a.parent_id=b.id where a.TYPE_CODE in ('00','01','02')
+		<if test="type != null">
+				and a.TYPE_CODE = #{type}
+		</if>
+		<if test="name != null">
+				and a.name like '%${name}%'
+		</if>
+		<if test="parentId != null">
+				and a.PARENT_ID = #{parentId}
+		</if>
+		order by a.type_code,a.PARENT_ID
+	</select>
+	<!-- 取得字典列表code最大值  -->
+	<select id="getDictionaryMaxCode" resultType="java.lang.Integer">
+		select max(cast(d.code AS int)) FROM jx_globe_dictionary d
+	</select>
+	<insert id="saveDictionary" parameterType="Dictionary">
+		 INSERT INTO jx_globe_dictionary
+	    	(id, type_code, type_name, code, name, parent_id)        
+	    VALUES (nextval('task_seq'), #{type_code}, #{type_name}, #{code}, #{name}, #{parent_id})  
+	</insert>
+	<delete id="delDictionaryByIds" parameterType="java.util.List">
+		delete from jx_globe_dictionary where id in 
+		<foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<update id="modifyDictionary" parameterType="Dictionary">
+		update jx_globe_dictionary set name=#{name} where id=#{id}
+	</update>
+	
+	 <!-- 获取任务进度列表不分页-->
+	<select id="getTaskInfoList" resultType="TaskInfo" parameterType="map">
+		select * from JX_TASKINFO t
+		where 1=1
+		<if test="status != null">
+				and t.taskstatus = #{status}
+		</if>
+		<if test="createUser != null">
+				and t.allocationUser = #{createUser}
+		</if>
+		<if test="exeUser != null">
+				and t.executedevtasksys = #{exeUser}
+		</if>
+		order by createTime
+	</select>
+
+	<!-- 获取任务进度列表 分页 -->
+	<select id="getPageTaskData" resultType="TaskInfo"
+		parameterType="map">
+		select * from (
+			select z.*,rownum rn from (
+				select * from JX_TASKINFO t
+				where 1=1
+				<if test="status != null">
+					and t.taskstatus = #{status}
+				</if>
+				<if test="createUser != null">
+					and t.allocationUser = #{createUser}
+				</if>
+				<if test="exeUser != null">
+					and t.executedevtasksys = #{exeUser}
+				</if>
+				order by createTime
+			)z
+		)ky
+		<where>
+			<if test="begin!=null">
+			<![CDATA[
+				and ky.rn > #{begin}
+			 ]]>
+			</if>
+			<if test="end!=null">
+			<![CDATA[
+				and ky.rn <= #{end}
+				 ]]>
+			</if>
+		</where>
+	</select>
+	 <!-- 获取任务进度列表分页count-->
+	<select id="getPageTaskSize" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from JX_TASKINFO t
+		where 1=1
+		<if test="status != null">
+				and t.taskstatus = #{status}
+		</if>
+		<if test="createUser != null">
+				and t.allocationUser = #{createUser}
+		</if>
+		<if test="exeUser != null">
+				and t.executedevtasksys = #{exeUser}
+		</if>
+		order by createTime
+	</select>
+	
+	 <!-- 保存消息提醒-->
+	 
+	 <!-- 新增用户 -->
+	<insert id="saveMessage" parameterType="java.util.HashMap">
+		INSERT INTO JX_MESSAGEE (
+           		ID,
+			 <if test="receiverUserId != NULL">	
+			 	RECEIVERUSERID,
+			 </if>	
+			  <if test="senderUserId != NULL">
+			 	SENDERUSERID,
+			 </if>	
+			 <if test="sendTime != NULL">
+			 	SENDTIME,
+			 </if>	
+			 <if test="content != NULL">
+			 	CONTENT,
+			 </if>	
+			 <if test="title != NULL">
+			 	TITLE,
+			 </if>	
+			 <if test="isdel  != NULL"> 
+				ISDEL,
+			 </if>	
+			 <if test="isread != NULL">
+			 	ISREAD,
+			 </if>	
+			 <if test="taskInfoId != NULL">	
+			 	TASKINFOID,
+			</if> 
+			 <if test="messageStatus != NULL">	
+				MESSAGESTATUS
+			</if> 	               
+		)
+		VALUES (
+			nextval('task_seq'),
+           <if test="receiverUserId != null">	
+			 	#{receiverUserId},
+			 </if>	
+			 <if test="senderUserId != null">
+				 #{senderUserId},
+			 </if>	
+			 <if test="sendTime != null">
+				#{sendTime},
+			 </if>	
+			 <if test="content != null">
+			 	#{content},
+			 </if>	
+			 <if test="title != null">
+			 	#{title},
+			 </if>	
+			 <if test="isdel  != null"> 
+			 	#{isdel},
+			 </if>	
+			 <if test="isread != null">
+			    #{isread},
+			 </if>	
+			 <if test="taskInfoId != null">	
+			 	#{taskInfoId},
+			</if> 
+			<if test="messageStatus != null">	
+			 	#{messageStatus}
+			</if>      	
+		)
+	</insert>
+	
+	 <!-- 获取任务列表当前延期数据  -->
+	<select id="getTaskInfo" resultType="TaskInfo" >
+		SELECT t.*,(select email from jx_users u where u.user_id=t.allocationuser) createEmail , (select email from jx_users u where u.user_id=t.executedevtasksys)  exeEmail  FROM jx_taskinfo t
+		 WHERE 1=1 
+		<![CDATA[ 
+			and t.expectendtime <> ''
+			and t.expectendtime < current_date::text
+			and taskstatus in( '3','4')
+			and (t.falred = '1' OR t.falred IS NULL  )
+			and t.tstatus = '0' 
+		  ]]>
+	</select>
+	
+	<!-- 获取任务列表即将（提前一天）延期数据  -->
+	<select id="getTaskInfoLater" resultType="TaskInfo" parameterType="String">
+		SELECT t.*,(select email from jx_users u where u.user_id=t.allocationuser) createEmail , (select email from jx_users u where u.user_id=t.executedevtasksys)  exeEmail  FROM jx_taskinfo t
+		 WHERE 1=1 
+		<![CDATA[ 
+			and t.expectendtime <> ''
+			and t.expectendtime like '%${_parameter}%'
+			and taskstatus in( '3','4')
+			and (t.falred = '1' OR t.falred IS NULL  )
+			and t.tstatus = '0' 
+		  ]]>
+		  <!-- to_char(current_date+2,'yyyy-mm-dd') <==> (current_date + integer '1')::text  -->
+	</select>
+
+	<!--新增【提醒表】 -->
+	<insert id="insertTxList" parameterType="java.util.List">
+		 insert into JX_MESSAGEE (
+			id,
+			receiveruserid,
+			senderuserid,
+			sendtime,
+			content,
+			title,
+			isdel,
+			isread,
+			taskinfoid
+			)values 
+			<foreach collection="list" item="item" index="index"  separator="," >
+				(	
+					nextval('task_seq'),
+					#{item.receiverUserId},
+					#{item.senderUserId},
+					#{item.sendTime},
+					#{item.content},
+					#{item.title},
+					#{item.isdel},
+					#{item.isread},
+					#{item.taskInfoId}
+				)
+			</foreach>
+		
+	</insert>
+
+	<!--修改【任务表】 -->
+	<update id="updateTaskInfo" parameterType="map">
+		update
+		JX_TASKINFO
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="falred=case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.falRed != null and i.falRed != '' ">
+						when ID=#{i.rwid} then #{i.falRed}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="taskstatus=case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.taskstatus != null and i.taskstatus != '' ">
+						when ID=#{i.rwid} then #{i.taskstatus}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		where
+		<foreach collection="list" separator="or" item="i" index="index">
+			ID=#{i.rwid}
+		</foreach>
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

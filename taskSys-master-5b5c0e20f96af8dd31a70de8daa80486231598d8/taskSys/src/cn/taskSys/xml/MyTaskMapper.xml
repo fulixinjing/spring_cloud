@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.MyTaskDao">
+		<resultMap type="cn.taskSys.entity.TaskInfo" id="Base_Result_Map">
+		<result column="ID" property="id" />
+		<result column="ALLOCATIONUSER" property="allocationUser" />
+		<result column="CREATETIME" property="createTime" />
+		<result column="TASKNAME" property="taskname" />
+		<result column="TASKCONTENT" property="taskContent" />
+		<result column="EXPECTENDTIME" property="expectEndTime" />
+		<result column="ACTUALENDTIME" property="actualEndTime" />
+		<result column="EXECUTEDEVTASKSYS" property="executedevtasksys" />
+		<result column="TASKSTATUS" property="taskstatus" />
+		<result column="ISDEL" property="isdel" />
+		<result column="REMARK" property="remark" />
+		<result column="SCORE" property="score" />
+		<result column="CREATE_NAME" property="create_name" />
+		<result column="EXEC_NAME" property="exec_name" />
+		<result column="DIRECT_SUPERVISOR" property="direct_supervisor" />
+		<result column="TEAM" property="team" />
+		<result column="JOB_ID" property="jobId" />
+		<result column="DEPARTMENT" property="department" />
+		<result column="YFPDATE" property="yfpDate" />
+		<result column="JXZDATE" property="jxzDate" />
+		<result column="SUBDATE" property="subDate" />
+		<result column="ENDDATE" property="endDate" />	
+		<result column="falred" property="falred" />	
+		<result column="taskpid" property="taskpid" />	
+		<result column="tjtype" property="tjtype" />
+		<result column="page" property="page" />	
+		<result column="maxResult" property="maxResult" />	
+		<result column="con_quarter" property="conQuarter"/>
+		<result column="con_year" property="conYear"/>
+		<result column="t_level" property="tLevel"/>
+		<result column="deliver_person" property="deliver_person"/>	
+		<result column="deliver_time" property="deliver_time"/>	
+		<result column="is_pass" property="is_pass"/>	
+		<result column="is_deliver" property="is_deliver"/>	
+		<result column="delivered" property="delivered"/>	
+		<result column="deliver_taskid" property="deliver_taskid"/>
+		<result column="TASKWORKTIME" property="taskWorkTime"/>
+		<result column="projectcode" property="projectCode"/>
+		<result column="projectname" property="projectName"/>
+		<result column="projectstage" property="projectStage"/>
+	</resultMap>
+	 <!--员工  我的任务  任务状态-->
+	<select id="empMyTaskList" parameterType="java.util.Map" resultMap="Base_Result_Map">
+			select z.* from (
+				select c.id, 
+						c.allocationuser, 
+						c.createtime, 
+						c.taskname, 
+						c.taskcontent,
+						c.taskworktime,
+						c.projectcode,
+						c.projectname,
+						c.projectstage, 
+						c.expectendtime, 
+						c.actualendtime, 
+						c.executedevtasksys, 
+						c.exec_name, 
+						c.isdel, 
+						c.remark, 
+						c.direct_supervisor, 
+						c.team, 
+						c.department, 
+						c.yfpdate, 
+						c.jxzdate, 
+						c.subdate, 
+						c.enddate, 
+						c.falred, 
+						c.taskpid, 
+						c.tjtype, 
+						c.job_id, 
+						c.score, 
+						c.con_quarter, 
+						c.con_year, 
+						c.t_level,
+						c.taskstatus,
+						c.tstatus,
+						c.final_time,
+						c.start_suspend_time, 
+						b.user_name create_name 	 
+						FROM JX_TASKINFO c ,jx_users b where 1=1 and b.user_id = c.allocationuser
+			<if test="id != null and id != '' ">
+				and c.id = #{id}
+			</if>
+			<if test="userId != null and userId != '' ">
+				and c.executedevtasksys = #{userId}
+			</if>
+			<if test="flag == 1">
+				and c.taskstatus = '2'  order by yfpdate desc
+			</if>
+			<if test="flag == 2">
+				and c.taskstatus in ('3','4')  order by jxzdate desc
+			</if>
+			<if test="flag == 3">
+				and c.taskstatus in ('5','6','7')  order by subdate desc
+			</if>
+			<if test="flag == 4">
+				and c.taskstatus = '8'  order by endDate desc
+			</if>
+			
+			)z  LIMIT #{nowNum} OFFSET #{begin}
+		
+	</select>
+	<!-- 员工 我的任务 任务条数-->
+	<select id="empMyTaskSize" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*) from (
+			select c.id, 
+						c.allocationuser, 
+						c.createtime, 
+						c.taskname, 
+						c.taskcontent,
+						c.taskworktime,
+						c.projectcode,
+						c.projectname,
+						c.projectstage, 
+						c.expectendtime, 
+						c.actualendtime, 
+						c.executedevtasksys, 
+						c.exec_name, 
+						c.isdel, 
+						c.remark, 
+						c.direct_supervisor, 
+						c.team, 
+						c.department, 
+						c.yfpdate, 
+						c.jxzdate, 
+						c.subdate, 
+						c.enddate, 
+						c.falred, 
+						c.taskpid, 
+						c.tjtype, 
+						c.job_id, 
+						c.score, 
+						c.con_quarter, 
+						c.con_year, 
+						c.t_level,
+						c.taskstatus,
+						c.tstatus,
+						c.final_time,
+						c.start_suspend_time, 
+						b.user_name create_name 	 
+						FROM JX_TASKINFO c ,jx_users b where 1=1 and b.user_id = c.allocationuser
+			<if test="id != null and id != '' ">
+				and c.id = #{id}
+			</if>
+			<if test="userId != null and userId != '' ">
+				and c.executedevtasksys = #{userId}
+			</if>
+			<if test="flag == 1"><!-- 已分配 -->
+				and c.taskstatus = '2'
+			</if>
+			<if test="flag == 2"><!-- 进行中 -->
+				and c.taskstatus in ('3','4')
+			</if>
+			<if test="flag == 3"><!-- 已提交 -->
+				and c.taskstatus in ('5','6','7')
+			</if>
+			<if test="flag == 4"><!-- 已完成-->
+				and c.taskstatus = '8'
+			</if>
+		) ky
+	</select>
+	<!-- 高管 进行中  高管已完成  状态 -->
+	<select id="gaoGuanTaskList" parameterType="java.util.Map" resultMap="Base_Result_Map">
+			select z.* from (SELECT 
+						c.id, 
+						c.allocationuser, 
+						c.createtime, 
+						c.taskname, 
+						c.taskcontent,
+						c.taskworktime,
+						c.projectcode,
+						c.projectname,
+						c.projectstage, 
+						c.expectendtime, 
+						c.actualendtime, 
+						c.executedevtasksys, 
+						c.taskstatus, 
+						c.isdel, 
+						c.remark, 
+						c.create_name, 
+						c.direct_supervisor, 
+						c.team, 
+						c.department, 
+						c.yfpdate, 
+						c.jxzdate, 
+						c.subdate, 
+						c.enddate, 
+						c.falred, 
+						c.taskpid, 
+						c.tjtype, 
+						c.job_id, 
+						c.score, 
+						c.con_quarter, 
+						c.con_year, 
+						c.t_level,
+						c.taskstatus,
+						c.tstatus,
+						c.final_time,
+						c.start_suspend_time,
+						(select count(*) FROM jx_taskinfo s WHERE  s.taskpid=c.id) ids, 
+						b.user_name exec_name 	 
+						FROM JX_TASKINFO c ,jx_users b where 1=1 and b.user_id = c.executedevtasksys
+			<if test="id != null and id != '' ">
+				and c.id = #{id}
+			</if>
+			<if test="userId != null and userId != '' ">
+				and c.allocationuser = #{userId}
+			</if>
+			<if test="flag == 5">
+				and c.taskstatus in ('2','3','4','5','6','7')
+				union
+				SELECT 
+						c.id, 
+						c.allocationuser, 
+						c.createtime, 
+						c.taskname, 
+						c.taskcontent,
+						c.taskworktime,
+						c.projectcode,
+						c.projectname,
+						c.projectstage, 
+						c.expectendtime, 
+						c.actualendtime, 
+						c.executedevtasksys, 
+						c.taskstatus, 
+						c.isdel, 
+						c.remark, 
+						c.create_name, 
+						c.direct_supervisor, 
+						c.team, 
+						c.department, 
+						c.yfpdate, 
+						c.jxzdate, 
+						c.subdate, 
+						c.enddate, 
+						c.falred, 
+						c.taskpid, 
+						c.tjtype, 
+						c.job_id, 
+						c.score, 
+						c.con_quarter, 
+						c.con_year, 
+						c.t_level,
+						c.taskstatus,
+						c.tstatus,
+						c.final_time,
+						c.start_suspend_time, 
+						(select count(*) FROM jx_taskinfo s WHERE  s.taskpid=c.id) ids, 
+						''
+						FROM JX_TASKINFO c  where 1=1 and c.taskstatus in ('1')
+						<if test="id != null and id != '' ">
+							and c.id = #{id}
+						</if>
+						<if test="userId != null and userId != '' ">
+							and c.allocationuser = #{userId}
+						</if>
+			</if>
+			<if test="flag == 6">
+				and c.taskstatus = '8'	
+			</if>			
+			)z  
+			<if test="flag == 5">
+			order by createtime desc
+			</if>
+			<if test="flag == 6">
+			order by endDate desc
+			</if>			
+			LIMIT #{nowNum} OFFSET #{begin}
+		
+	</select>
+		<!-- 高管进行中  高管已完成条数  -->
+		<select id="gaoGuanTaskSize" parameterType="java.util.Map" resultType="java.lang.Integer">
+			select count(*) from (
+				SELECT 
+						c.id, 
+						c.allocationuser, 
+						c.createtime, 
+						c.taskname, 
+						c.taskcontent,
+						c.taskworktime,
+						c.projectcode,
+						c.projectname,
+						c.projectstage, 
+						c.expectendtime, 
+						c.actualendtime, 
+						c.executedevtasksys, 
+						c.taskstatus, 
+						c.isdel, 
+						c.remark, 
+						c.create_name, 
+						c.direct_supervisor, 
+						c.team, 
+						c.department, 
+						c.yfpdate, 
+						c.jxzdate, 
+						c.subdate, 
+						c.enddate, 
+						c.falred, 
+						c.taskpid, 
+						c.tjtype, 
+						c.job_id, 
+						c.score, 
+						c.con_quarter, 
+						c.con_year, 
+						c.t_level,
+						c.taskstatus,
+						c.tstatus,
+						c.final_time,
+						c.start_suspend_time,  
+						b.user_name exec_name 	 
+						FROM JX_TASKINFO c ,jx_users b where 1=1 and b.user_id = c.executedevtasksys
+			<if test="id != null and id != '' ">
+				and c.id = #{id}
+			</if>
+			<if test="userId != null and userId != '' ">
+				and c.allocationuser = #{userId}
+			</if>
+			<if test="flag == 5">
+				and c.taskstatus in ('2','3','4','5','6','7')
+				union
+				SELECT 
+						c.id, 
+						c.allocationuser, 
+						c.createtime, 
+						c.taskname, 
+						c.taskcontent,
+						c.taskworktime,
+						c.projectcode,
+						c.projectname,
+						c.projectstage, 
+						c.expectendtime, 
+						c.actualendtime, 
+						c.executedevtasksys, 
+						c.taskstatus, 
+						c.isdel, 
+						c.remark, 
+						c.create_name, 
+						c.direct_supervisor, 
+						c.team, 
+						c.department, 
+						c.yfpdate, 
+						c.jxzdate, 
+						c.subdate, 
+						c.enddate, 
+						c.falred, 
+						c.taskpid, 
+						c.tjtype, 
+						c.job_id, 
+						c.score, 
+						c.con_quarter, 
+						c.con_year, 
+						c.t_level,
+						c.taskstatus,
+						c.tstatus,
+						c.final_time,
+						c.start_suspend_time,  
+						''
+						FROM JX_TASKINFO c  where 1=1 and c.taskstatus in ('1')
+						<if test="id != null and id != '' ">
+							and c.id = #{id}
+						</if>
+						<if test="userId != null and userId != '' ">
+							and c.allocationuser = #{userId}
+						</if>
+			</if>
+			<if test="flag == 6">
+				and c.taskstatus = '8'	
+			</if>
+			) ky
+	</select>
+	
+	<select id="getUserInfoById" parameterType="String" resultType="cn.taskSys.entity.User">
+		select * from jx_users where user_id = #{userId}
+	</select>
+	
+	<select id="roleCode" parameterType="String" resultType="String">
+		select r.role_code from jx_roles r,jx_users u,jx_user_role ur where
+			r.id=ur.roleid and u.user_id=ur.userid and u.user_id=#{userId}
+	</select>
+</mapper>
+
+
+
+

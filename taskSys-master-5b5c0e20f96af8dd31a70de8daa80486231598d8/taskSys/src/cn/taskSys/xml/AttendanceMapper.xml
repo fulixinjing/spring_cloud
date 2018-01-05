@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.AttendanceDao">
+	<resultMap type="cn.taskSys.entity.Attendance" id="Base_Result_Map">
+		<result column="ac_id" property="acId"/>
+		<result column="ac_empcode" property="acEmpCode"/>
+		<result column="ac_gz" property="acgz"/>
+		<result column="ac_starttime" property="acStartTime"/>
+		<result column="ac_endtime" property="acEndTime"/>
+		<result column="acgzflag" property="acgzFlag" />
+	</resultMap>
+	
+	<!--查询角色  -->
+   <select id="getPreAttendance" resultMap="Base_Result_Map" parameterType="java.util.Map">
+		select * from jx_attendance_counting where ac_empcode = #{acEmpCode}
+	</select>
+	
+   	<!--添加角色  -->
+	<insert id="addPreAttendance" parameterType="java.util.Map">
+		insert into jx_attendance_counting(
+		<if test="acId != null and acId !='' ">
+			ac_id,
+		</if>
+		<if test="acEmpCode != null and acEmpCode != '' ">
+			ac_empcode,
+		</if>
+		<if test="acgz != null and acgz !='' ">
+			ac_gz,
+		</if>
+		<if test="acgzFlag != null and acgzFlag !='' ">
+			acgzflag,
+		</if>
+		<if test="acStartTime != null and acStartTime !='' ">
+			ac_starttime,
+		</if>
+		<if test="acEndTime != null and acEndTime !='' ">
+			ac_endtime
+		</if>
+		)
+		values(
+		<if test="acId != null and acId !='' ">
+			#{acId},
+		</if>
+		<if test="acEmpCode != null and acEmpCode != '' ">
+			#{acEmpCode},
+		</if>
+		<if test="acgz != null and acgz !='' ">
+			#{acgz},
+		</if>
+		<if test="acgzFlag != null and acgzFlag !='' ">
+			#{acgzFlag},
+		</if>
+		<if test="acStartTime != null and acStartTime !='' ">
+			#{acStartTime},
+		</if>
+		<if test="acEndTime != null and acEndTime !='' ">
+			#{acEndTime}
+		</if>
+		)
+	</insert>
+	
+	<update id="updatePreAttendance" parameterType="java.util.Map">
+		update jx_attendance_counting set
+			<if test="acgz != null">ac_gz=#{acgz}</if>
+			<if test="acgzFlag != null">,acgzflag=#{acgzFlag}</if>
+			<if test="acStartTime != null">,ac_starttime=#{acStartTime}</if>
+			<if test="acEndTime != null">,ac_endtime=#{acEndTime}</if>
+			where ac_empcode = #{acEmpCode}
+	</update>
+</mapper>

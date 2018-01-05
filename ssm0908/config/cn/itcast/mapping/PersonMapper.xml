@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:标识一个唯一的映射文件,namespace不能使用别名 -->
+<mapper namespace="cn.itcast.model.Person">
+	<!-- 开启person的二级缓存 -->
+	<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+	<!-- resultMap实现表名的字段与实体属性之间的映射
+		type:实体类型
+		id：resultMap唯一的标识
+	 -->
+	<resultMap type="person" id="basePersonRM">
+		<!-- column:表的列名
+			property：实体的属性名
+		 -->
+		<id column="person_id" property="personId"/>
+		<result column="name" property="name"/>
+		<result column="birthday" property="birthday"/>
+		<result column="person_addr" property="personAddr"/>
+		<result column="gender" property="gender"/>
+	</resultMap>
+	<!-- 提取公用的sql片段 -->
+	<sql id="columns">
+		PERSON_ID, NAME, BIRTHDAY, PERSON_ADDR, GENDER
+	</sql>
+	<!-- 对一传一个参数时变量名任意 -->
+	<select id="selectPersonById1" parameterType="int" resultMap="basePersonRM">
+		SELECT <include refid="columns"/> from person p where p.person_id = #{iffffffd}
+	</select>
+	<!-- 插入语句 -->
+	<insert id="insert" parameterType="person">
+		<!-- 
+			keyProperty:实体类里面主键的属性
+			order：主键生成的顺序，mysql里order="AFTER"，oracle里面是order="BEFORE"
+			resultType：主键返回值的类型
+			mysql生成主键的语句select LAST_INSERT_ID()
+			oracle：select xxx.nextval from dual
+		 -->
+		<selectKey keyProperty="personId" order="AFTER" resultType="int">
+			select LAST_INSERT_ID()
+		</selectKey>
+		insert into person(person_id, name, birthday, person_addr, gender)
+		values(#{personId},#{name}, #{birthday}, #{personAddr}, #{gender})
+	</insert>
+	
+	
+	
+	
+	
+	<!-- 动态条件组合查询
+		<where>标签里面可以写条件的判断，同时可以处理第一个and
+	 -->
+	<select id="selectPersonByCondition" parameterType="map" resultMap="basePersonRM">
+		select * from person p
+		<where>
+			<!-- test="name != null", name是map中的key -->
+			<if test="name != null">
+				p.name like '%${name}%'
+			</if>
+			<if test="birthday != null">
+				<![CDATA[
+				and p.birthday < #{birthday}
+				]]>
+			</if>
+			<if test="gender != null">
+				and p.gender = #{gender}
+			</if>
+			<if test="personAddr != null">
+				and p.person_addr like '%${personAddr}%'
+			</if>
+		</where>
+	</select>
+	
+	<!-- 动态修改：<set>可以处理最后一个， 
+		flushCache针对于二级缓存，默认情况下是true，代表每一次更新都需要刷新缓存，如果是false不刷新缓存
+	-->
+	<update id="dynamicUpdate" parameterType="person" >
+		update person p 
+		<set>
+			<if test="name != null">
+				p.name = #{name},
+			</if>
+			<if test="birthday != null">
+				p.birthday = #{birthday},
+			</if>
+			<if test="gender != null">
+			 	p.gender = #{gender},
+			</if>
+			<if test="personAddr != null">
+			    p.person_addr = #{personAddr}
+			</if>
+		</set>
+		where p.person_id = #{personId}
+	</update>
+	
+	
+	
+	
+	<!-- 批量删除 -->
+	<delete id="deleteBatch">
+		delete from person where person_id in 
+		<foreach collection="ids" open="(" close=")" item="personId" separator=",">
+			#{personId}
+		</foreach>
+	</delete>
+	
+	
+</mapper>

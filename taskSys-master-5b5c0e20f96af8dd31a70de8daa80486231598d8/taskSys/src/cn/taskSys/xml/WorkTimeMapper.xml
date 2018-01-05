@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.WorkTimeDao">
+	<resultMap type="cn.taskSys.entity.WorkTime" id="Base_Result_Map">
+		<result column="id" property="id" />
+		<result column="userid" property="userid" />
+		<result column="all_work_time" property="allWorkTime"/>
+		<result column="saturation" property="saturation"/>
+		<result column="emp_code" property="empCode"/>
+		<result column="type" property="type"/>
+		<result column="statistics_time" property="statisticsTime"/>
+		<result column="add_time" property="addTime"/>
+		<result column="department" property="department"/>
+		<result column="team" property="team"/>
+		
+	</resultMap>
+	<insert id="saveWorkTime" parameterType="java.util.List"> 
+		 INSERT INTO jx_work_time
+	    	(id,userid,all_work_time,saturation,emp_code,type,statistics_time,add_time,department,team)        
+	    VALUES 
+	    <foreach item="workTime" collection="list" index="index" separator=",">
+			(#{workTime.id},#{workTime.userid},#{workTime.allWorkTime},#{workTime.saturation},#{workTime.empCode},#{workTime.type},#{workTime.statisticsTime},#{workTime.addTime},#{workTime.department},#{workTime.team})
+		</foreach>
+	</insert>
+	
+	<select id="getWorkTimeSumByDepartment" parameterType="java.lang.String" resultType="java.util.Map">
+		select department, sum(cast(all_work_time AS DOUBLE precision)) sum
+		FROM jx_work_time WHERE type='1' AND saturation!='N/A'
+		<if test="_parameter!= null and _parameter!='' ">
+			AND statistics_time=#{_parameter}
+		</if> 
+		GROUP BY department  
+	</select>
+	
+	<delete id="delWorkTime" parameterType="cn.taskSys.entity.WorkTime">
+		delete from jx_work_time where type = #{type} and statistics_time = #{statisticsTime}
+	</delete>
+
+	<select id="getWorkTimeList1" parameterType="cn.taskSys.entity.WorkTime" resultType="cn.taskSys.entity.WorkTime">
+		select z.* from (
+			select a.login_name loginName,a.user_name userName,c.p_attence_day attenceDay,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.DEPARTMENT_ID=p.code) departmentName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.TEAM_ID=p.code) teamName, 
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.POSITION_ID=p.code) positionName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.job_id=p.code) postName,
+			b.all_work_time allWorkTime,b.saturation saturation,b.statistics_time statisticsTime
+			FROM jx_users a, jx_work_time b ,jx_person_attence c
+			where a.status='0' AND a.login_name =b.emp_code and b.type='1'
+			and c.p_emp_code=b.emp_code and c.p_attence_month=b.statistics_time
+			<if test="statisticsTime != null and statisticsTime != '' ">
+				and b.statistics_time=#{statisticsTime}
+			</if>
+			<if test="department != null and department != '' ">
+				and b.department=#{department}
+			</if>
+			<if test="empCode != null and empCode != '' ">
+				and b.emp_code=#{empCode}
+			</if>
+			<if test="userName != null and userName != '' ">
+				and a.user_name like '%${userName}%'
+			</if>
+			ORDER BY b.department,b.emp_code,b.statistics_time,b.saturation desc
+		)z  LIMIT 			 
+			 <![CDATA[ #{maxResult} OFFSET ( #{page} - 1)*#{maxResult}   ]]>
+	</select>
+	
+	<select id="getWorkTimeListCount1" parameterType="cn.taskSys.entity.WorkTime" resultType="java.lang.Integer">
+		select count(*) from (
+			select a.login_name loginName,a.user_name userName,c.p_attence_day attenceDay,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.DEPARTMENT_ID=p.code) departmentName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.TEAM_ID=p.code) teamName, 
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.POSITION_ID=p.code) positionName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.job_id=p.code) postName,
+			b.all_work_time allWorkTime,b.saturation saturation,b.statistics_time statisticsTime
+			FROM jx_users a, jx_work_time b ,jx_person_attence c
+			where a.status='0' AND a.login_name =b.emp_code and b.type='1'
+			and c.p_emp_code=b.emp_code and c.p_attence_month=b.statistics_time
+			<if test="statisticsTime != null and statisticsTime != '' ">
+				and b.statistics_time=#{statisticsTime}
+			</if>
+			<if test="department != null and department != '' ">
+				and b.department=#{department}
+			</if>
+			<if test="empCode != null and empCode != '' ">
+				and b.emp_code=#{empCode}
+			</if>
+			<if test="userName != null and userName != '' ">
+				and a.user_name like '%${userName}%'
+			</if>
+		) ky
+	</select>
+	
+	<select id="getWorkTimeList2" parameterType="cn.taskSys.entity.WorkTime" resultType="cn.taskSys.entity.WorkTime">
+		select z.* from (
+			select
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE b.DEPARTMENT=p.code) departmentName,
+			b.all_work_time allWorkTime,b.saturation saturation,b.statistics_time statisticsTime
+			FROM jx_work_time b 
+			where b.type='3'
+			<if test="statisticsTime != null and statisticsTime != '' ">
+				and b.statistics_time=#{statisticsTime}
+			</if>
+			<if test="department != null and department != '' ">
+				and b.department=#{department}
+			</if>
+		
+		)z  LIMIT 			 
+			 <![CDATA[ #{maxResult} OFFSET ( #{page} - 1)*#{maxResult}   ]]>
+	</select>
+	
+	<select id="getWorkTimeListCount2" parameterType="cn.taskSys.entity.WorkTime" resultType="java.lang.Integer">
+		select count(*) from (
+			select
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE b.DEPARTMENT=p.code) departmentName,
+			b.all_work_time allWorkTime,b.saturation saturation,b.statistics_time statisticsTime
+			FROM jx_work_time b 
+			where b.type='3'
+			<if test="statisticsTime != null and statisticsTime != '' ">
+				and b.statistics_time=#{statisticsTime}
+			</if>
+			<if test="department != null and department != '' ">
+				and b.department=#{department}
+			</if>
+		) ky
+	</select>
+	
+	<select id="exportWorkTimeList1" parameterType="cn.taskSys.entity.WorkTime" resultType="cn.taskSys.entity.WorkTime">
+		select a.login_name loginName,a.user_name userName,
+		(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.DEPARTMENT_ID=p.code) departmentName,
+		(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.TEAM_ID=p.code) teamName, 
+		(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.POSITION_ID=p.code) positionName,
+		(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.job_id=p.code) postName,
+		b.all_work_time allWorkTime,b.saturation saturation,b.statistics_time statisticsTime,b.emp_code empCode
+		FROM jx_users a, jx_work_time b 
+		where a.status='0' AND a.login_name =b.emp_code and b.type='1'
+		<if test="statisticsTime != null and statisticsTime != '' ">
+			and b.statistics_time=#{statisticsTime}
+		</if>
+		<if test="department != null and department != '' ">
+			and b.department=#{department}
+		</if>
+		<if test="empCode != null and empCode != '' ">
+			and b.emp_code=#{empCode}
+		</if>
+		<if test="userName != null and userName != '' ">
+			and a.user_name like '%${userName}%'
+		</if>
+	</select>
+	
+	<select id="exportWorkTimeList2" parameterType="cn.taskSys.entity.WorkTime" resultType="cn.taskSys.entity.WorkTime">
+		select
+		(select p.name FROM JX_GLOBE_DICTIONARY p WHERE b.DEPARTMENT=p.code) departmentName,
+		b.all_work_time allWorkTime,b.saturation saturation,b.statistics_time statisticsTime
+		FROM jx_work_time b 
+		where b.type='3'
+		<if test="statisticsTime != null and statisticsTime != '' ">
+			and b.statistics_time=#{statisticsTime}
+		</if>
+		<if test="department != null and department != '' ">
+			and b.department=#{department}
+		</if>
+	</select>
+	
+	<!-- 查询部门工作量 -->
+	<select id="getDepartWT" parameterType="String" resultMap="Base_Result_Map">
+		select * from jx_work_time where type='3' and statistics_time like #{statisticsTime} 
+	</select>
+	
+	<!-- 查询各部门出勤天数之和 (不包括部门经理)-->
+	<select id="getAttenceDaySumByDepartment" parameterType="java.lang.String" resultType="java.util.Map">
+		select u.department_id department, sum(cast(pa.p_attence_day as double precision)) sum
+		from jx_person_attence pa,jx_users u,jx_user_role ur,jx_roles r 
+		where pa.p_emp_code=u.login_name
+		and u.user_id=ur.userid AND ur.roleid=r.id AND r.role_code!='BMJL'
+		<if test="_parameter!= null and _parameter!='' ">
+			AND pa.p_attence_month=#{_parameter}
+		</if>
+		and pa.p_emp_code NOT IN (select emp_code FROM jx_work_time WHERE type='1' and saturation='N/A'
+		<if test="_parameter!= null and _parameter!='' ">
+		 AND statistics_time LIKE '%${_parameter}%'
+		 </if>
+		 )
+		group by u.department_id order by department
+	</select>
+	
+	<!-- 查询各团队工作量之和 -->
+	<select id="getWorkTimeSumByTeam" parameterType="java.lang.String" resultType="java.util.Map">
+		select department,team, sum(cast(all_work_time AS DOUBLE precision)) sum
+		FROM jx_work_time WHERE type='1'
+		<if test="_parameter!= null and _parameter!='' ">
+			AND statistics_time=#{_parameter}
+		</if> 
+		GROUP BY department ,team order by department
+	</select>
+	
+	<!-- 查询各团队实际出勤总天数 -->
+	<select id="getAttenceDaySumByTeam" parameterType="java.lang.String" resultType="java.util.Map">
+		select u.department_id department,u.team_id team,sum(cast(pa.p_attence_day as double precision)) sum
+		from jx_person_attence pa,jx_users u,jx_user_role ur,jx_roles r  
+		where pa.p_emp_code=u.login_name
+		and u.user_id=ur.userid AND ur.roleid=r.id AND r.role_code!='BMJL'
+		<if test="_parameter!= null and _parameter!='' ">
+			AND pa.p_attence_month=#{_parameter}
+		</if>
+		group by u.department_id ,u.team_id order by department
+	</select>
+</mapper>
+
+
+
+
+

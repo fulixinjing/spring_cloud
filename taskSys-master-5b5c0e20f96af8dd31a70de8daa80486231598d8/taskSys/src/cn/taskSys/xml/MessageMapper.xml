@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.MessageDao">
+
+	<!-- message 是否已读 -->
+
+   <select id="getMessage" parameterType="String" resultType="Message">
+   		select id,title from jx_messagee where isread = '0' and receiveruserid =#{userId}
+   		order by sendtime desc
+   </select>
+    
+    <update id="updateMessage" parameterType="Long">
+    	
+    	update jx_messagee set isread = '1' where id = #{userId}
+    	
+    </update>
+    <select id="getMessageById" parameterType="java.lang.String" resultType="Message">
+    	select * from jx_messagee where id = #{id}
+    </select>
+    <update id="updateMessageByTaskId" parameterType="java.lang.String">
+    	update jx_messagee set isread = '1' where taskinfoid = #{taskInfoId} and isread = '0'
+    </update>
+    
+    <select id="getMessageForList" parameterType="java.util.Map" resultType="Message">
+    	select * from jx_messagee where isread = '0'  and taskinfoid = #{taskInfoId} and receiveruserid =#{userId} and messagestatus=#{messageStatus}
+    </select>
+    
+    <update id="updateMessageForTaskId" parameterType="java.lang.String">
+    	update jx_messagee set isread = '1' where taskinfoid = #{taskInfoId}
+    </update>
+</mapper>
+
+
+
+
+

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.AttenceDetailsDao">
+	<resultMap type="cn.taskSys.entity.AttenceDetails" id="Base_Result_Map">
+		<result column="ja_id" property="id" />
+		<result column="ja_name" property="username" />
+		<result column="ja_emp_code" property="empCode"/>
+		<result column="ja_ssbm" property="department"/>
+		<result column="ja_attence_date" property="attenceDate"/>
+		<result column="ja_week" property="week"/>
+		<result column="ja_date_type" property="dateType"/>
+		<result column="ja_attence_type" property="attenceType"/>
+		<result column="ja_morning_attence" property="morningAttence"/>
+		<result column="ja_afternoon_attence" property="afternoonAttence"/>
+		<result column="ja_remark" property="remark"/>
+		<result column="ja_remark_flag" property="remarkFlag"/>
+	
+	</resultMap>
+	
+	<select id="getAttenceByEmpCode" resultMap="Base_Result_Map"  parameterType="Map">
+		select * from jx_attence_details where 1=1
+		<if test="attenceDate != null and attenceDate !='' ">and ja_attence_date like '${attenceDate}%'</if>
+		<if test="empCode != null and empCode !='' ">and ja_emp_code = #{empCode}</if>
+		<if test="remarkFlag != null and remarkFlag !='' ">and ja_remark_flag = #{remarkFlag}</if>
+	</select>
+	
+	<select id="getAttdetailsById" resultMap="Base_Result_Map"  parameterType="String">
+		select * from jx_attence_details where 1=1
+			<if test="_parameter != null and _parameter !='' ">and ja_id = #{_parameter}</if>
+	</select>
+	
+	<select id="getAllAttence" resultMap="Base_Result_Map"  parameterType="Map">
+		select * from jx_attence_details where 1=1
+		<if test="_parameter != null and _parameter !='' ">and ja_attence_date like '${_parameter}%'</if>
+	</select>
+	
+	<insert id="saveAttenceDetails" parameterType="java.util.List"> 
+		INSERT INTO jx_attence_details
+	    	(ja_id,ja_name,ja_emp_code,ja_ssbm,ja_attence_date,ja_week,ja_date_type,ja_attence_type,ja_morning_attence,ja_afternoon_attence,ja_remark,ja_remark_flag)        
+	    VALUES 
+	    <foreach item="attenceDetails" collection="list" index="index" separator=",">
+			(#{attenceDetails.id},#{attenceDetails.username},#{attenceDetails.empCode},#{attenceDetails.department},
+			#{attenceDetails.attenceDate},#{attenceDetails.week},#{attenceDetails.dateType},#{attenceDetails.attenceType},
+			#{attenceDetails.morningAttence},#{attenceDetails.afternoonAttence},#{attenceDetails.remark},#{attenceDetails.remarkFlag})
+		</foreach>
+	</insert>
+	
+	<select id="getAttenceDetailsList" parameterType="cn.taskSys.entity.AttenceDetails" resultType="cn.taskSys.entity.AttenceDetails">
+		select
+			a.ja_id id,
+			a.ja_name username,
+			a.ja_emp_code empCode,
+			u.department_id department,
+			a.ja_attence_date attenceDate,
+			a.ja_week week,
+			a.ja_date_type dateType,
+			a.ja_attence_type attenceType,
+			a.ja_morning_attence morningAttence,
+			a.ja_afternoon_attence afternoonAttence,
+			a.ja_remark remark,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.ja_week=p.code and p.type_code='09') weekName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.ja_date_type=p.code and p.type_code='07') dateTypeName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE u.department_id=p.code and p.type_code='01') departmentName
+		from jx_attence_details a, jx_users u where a.ja_emp_code=u.login_name
+		<if test="attenceDate!=null and attenceDate!=''">
+			and a.ja_attence_date like '%${attenceDate}%'
+		</if>
+		<if test="department!=null and department!=''">
+			and u.department_id = #{department}
+		</if>
+		<if test="empCode!=null and empCode!=''">
+			and a.ja_emp_code = #{empCode}
+		</if>
+		<if test="dateType!=null and dateType!=''">
+			and a.ja_date_type = #{dateType}
+		</if>
+		<if test="id!=null and id!=''">
+			and a.ja_id = #{id}
+		</if>
+		<if test="username!=null and username!=''">
+			and a.ja_name like '%${username}%'
+		</if>
+		order by a.ja_emp_code,u.department_id,a.ja_attence_date
+	</select>
+	
+	<update id="modifyAttenceDetails" parameterType="cn.taskSys.entity.AttenceDetails">
+		update jx_attence_details set ja_remark = #{remark} 
+		<if test="morningAttence!=null and morningAttence!='' ">
+			, ja_morning_attence = #{morningAttence}
+		</if>
+		<if test="afternoonAttence!=null and afternoonAttence!='' ">
+			, ja_afternoon_attence = #{afternoonAttence}
+		</if>
+		<if test="remarkFlag!=null and remarkFlag!='' ">
+			, ja_remark_flag = #{remarkFlag}
+		</if>
+		where ja_id = #{id}
+	</update>
+	
+	<delete id="deleteAttenceDetailsByPro" parameterType="cn.taskSys.entity.AttenceDetails">
+		delete from jx_attence_details where ja_attence_date = #{attenceDate }
+		<if test="empCode!=null and empCode!='' ">
+			and ja_emp_code = #{empCode}
+		</if>
+	</delete>
+	
+	<!-- 查询已离职员工的员工号 -->
+	<select id="findLeaveEmpcodeList" resultType="java.lang.String">
+		select login_name empcode from jx_users where status='1'
+	</select>
+	
+	<!-- 查询应出勤天数 -->
+	<select id="getAttenceDay" resultType="java.lang.Integer" parameterType="map">
+		select count(distinct(ja_attence_date))  from jx_attence_details where ja_date_type='1' 
+		and ja_attence_date like '${attenceDate}%'
+	</select>
+	
+	<!-- 查询批量导入的后补打卡信息  根据标识 1 未计算 0 已经计算 -->
+	<select id="getLastList" resultMap="Base_Result_Map">
+		select * from jx_attence_details where ja_remark_flag= '1'
+	</select>
+	
+	<!-- 更改批量导入的后补打卡信息 根据标识 1 未计算 0 已经计算-->
+	<update id="modifyRemarkFalg" parameterType="String" >
+		update jx_attence_details set ja_remark_flag = '0' where ja_id = #{_parameter}
+	</update>
+	
+	<!-- 分页列表 -->
+	<select id="findAttenceDetailsList" parameterType="cn.taskSys.entity.AttenceDetails" resultType="cn.taskSys.entity.AttenceDetails">
+		select z.* from (
+			select
+			a.ja_id id,
+			a.ja_name username,
+			a.ja_emp_code empCode,
+			u.department_id department,
+			a.ja_attence_date attenceDate,
+			a.ja_week week,
+			a.ja_date_type dateType,
+			a.ja_attence_type attenceType,
+			a.ja_morning_attence morningAttence,
+			a.ja_afternoon_attence afternoonAttence,
+			a.ja_remark remark,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.ja_week=p.code and p.type_code='09') weekName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.ja_date_type=p.code and p.type_code='07') dateTypeName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE u.department_id=p.code and p.type_code='01') departmentName
+			from jx_attence_details a, jx_users u where a.ja_emp_code=u.login_name
+			<if test="attenceDate!=null and attenceDate!=''">
+				and a.ja_attence_date like '%${attenceDate}%'
+			</if>
+			<if test="department!=null and department!=''">
+				and u.department_id = #{department}
+			</if>
+			<if test="empCode!=null and empCode!=''">
+				and a.ja_emp_code = #{empCode}
+			</if>
+			<if test="username!=null and username!=''">
+				and a.ja_name like '%${username}%'
+			</if>
+			order by a.ja_emp_code,u.department_id,ja_attence_date
+		)z  LIMIT 			 
+			 <![CDATA[ #{maxResult} OFFSET ( #{page} - 1)*#{maxResult}   ]]>
+	</select>
+	<!-- 分页条数 -->
+	<select id="findAttenceDetailsListCount" parameterType="cn.taskSys.entity.AttenceDetails" resultType="java.lang.Integer">
+		select count(*) from (
+			select
+			a.ja_id id,
+			a.ja_name username,
+			a.ja_emp_code empCode,
+			u.department_id department,
+			a.ja_attence_date attenceDate,
+			a.ja_week week,
+			a.ja_date_type dateType,
+			a.ja_attence_type attenceType,
+			a.ja_morning_attence morningAttence,
+			a.ja_afternoon_attence afternoonAttence,
+			a.ja_remark remark,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.ja_week=p.code and p.type_code='09') weekName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE a.ja_date_type=p.code and p.type_code='07') dateTypeName,
+			(select p.name FROM JX_GLOBE_DICTIONARY p WHERE u.department_id=p.code and p.type_code='01') departmentName
+			from jx_attence_details a, jx_users u where a.ja_emp_code=u.login_name
+			<if test="attenceDate!=null and attenceDate!=''">
+				and a.ja_attence_date like '%${attenceDate}%'
+			</if>
+			<if test="department!=null and department!=''">
+				and u.department_id = #{department}
+			</if>
+			<if test="empCode!=null and empCode!=''">
+				and a.ja_emp_code = #{empCode}
+			</if>
+			<if test="username!=null and username!=''">
+				and a.ja_name like '%${username}%'
+			</if>
+		) ky
+	</select>
+	<!-- OA导入数据执行定时任务时，更新考勤详情 -->
+	<update id="updateAttenceDetailsList" parameterType="java.util.List">
+		<foreach collection="list" item="attence" index="index" open="" close="" separator=";">
+			update jx_attence_details set ja_remark = #{attence.remark} 
+			<if test="attence.morningAttence!=null and attence.morningAttence!='' ">
+				, ja_morning_attence = #{attence.morningAttence}
+			</if>
+			<if test="attence.afternoonAttence!=null and attence.afternoonAttence!='' ">
+				, ja_afternoon_attence = #{attence.afternoonAttence}
+			</if>
+			<if test="attence.remarkFlag!=null and attence.remarkFlag!='' ">
+				, ja_remark_flag = #{attence.remarkFlag}
+			</if>
+			<![CDATA[where ja_emp_code = #{attence.empCode} and ja_attence_date = #{attence.attenceDate}]]>
+		</foreach>
+	</update>
+</mapper>
+
+
+
+
+

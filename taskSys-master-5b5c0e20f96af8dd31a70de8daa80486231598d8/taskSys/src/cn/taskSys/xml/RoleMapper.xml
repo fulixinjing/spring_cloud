@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.RoleDao">
+	<resultMap type="cn.taskSys.entity.Role" id="Base_Result_Map">
+		<result column="ID" property="id"/>
+		<result column="ROLE_CODE" property="roleCode"/>
+		<result column="ROLE_NAME" property="roleName"/>
+		<result column="STATUS" property="status"/>
+		<result column="DESCRIPTION" property="description"/>
+		<result column="JX_SOURCE" property="jxSource"/>
+		<result column="CREATE_BY" property="createBy"/>
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="LAST_MODIFY_BY" property="lastModifyBy"/>
+		<result column="LAST_MODIFY_TIME" property="lastModifyTime"/>
+		<result column="rightcode" property="rightcode"/>
+		<result column="PARENT_ROLECODE" property="parentRoleCode"/>
+		<result column="PARENT_ROLENAME" property="parentRoleName"/>
+	</resultMap>
+	<resultMap type="cn.taskSys.entity.Right" id="Base_ResultRigth_Map">
+		<result property="id" column="ID"/>
+		<result property="rightCode" column="PRIVILEGES_CODE"/>
+		<result property="rightName" column="PRIVILEGES_NAME"/>
+		<result property="createBy" column="CREATE_BY"/>
+		<result property="createTime" column="CREATE_TIME"/>
+		<result property="menu_name" column="MENU_NAME"/>
+		<result property="privilegescode" column="PRIVILEGES_CODE"/>
+		<result property="menu_pid" column="MENU_PID"/>
+	</resultMap>
+	<resultMap type="cn.taskSys.entity.RoleRelation" id="Base_ResultRelation_Map">
+		<result column="ROLECODE" property="roleCode"/>
+		<result column="ROLENAME" property="roleName"/>
+		<result column="JX_SOURCE" property="jxSource" />
+		<result column="SOURCE_ROLECODE" property="sourceRoleCode" />
+		<result column="SOURCE_ROLENAME" property="sourceRoleName"/>
+	</resultMap>	
+	<resultMap type="cn.taskSys.entity.Post" id="Base_ResultPost_Map">
+		<result column="ID" property="postId"/>
+		<result column="POSTNAME" property="postName"/>
+	</resultMap>
+		
+   <select id="getRights" resultMap="Base_ResultRigth_Map" parameterType="RIGHT">
+		select ID,MENU_NAME,MENU_PID,PRIVILEGES_CODE from jx_menu where 	<![CDATA[  menu_status <> '1'	]]>	
+	</select>
+	
+	<select id="getRightByRoleCode" parameterType="Object" resultMap="Base_ResultRigth_Map">
+   		 select * from jx_role_privileges a inner join jx_roles b on a.role_code=b.role_code and b.role_code=#{roleCode}
+   </select>
+   	<select id="getRoleByUserId" resultMap="Base_Result_Map" parameterType="String">
+   		SELECT r.id,
+		       r.role_code,
+		       r.role_name,
+		       r.status,
+		       r.description,
+		       r.create_by,
+		       r.jx_source,
+		       r.create_time,
+		       r.last_modify_by,
+		       r.last_modify_time
+		  FROM jx_roles r, jx_user_role ur
+		 WHERE r.id = ur.roleid
+		   AND ur.userid = #{userId}
+   	</select>
+   	<!--添加角色  -->
+	<insert id="addRole" parameterType="Object">
+		insert into jx_roles(		
+		ID,
+		<if test="roleCode != null">
+		ROLE_CODE,
+		</if>
+		<if test="roleName != null">
+		ROLE_NAME,
+		</if>
+		<if test="status !=null">
+		STATUS,
+		</if>
+		<if test="description !=null">
+		DESCRIPTION,
+		</if>
+		<if test="createBy != null">
+		CREATE_BY,
+		</if>
+		<if test="createTime != null">
+		CREATE_TIME,
+		</if>
+		<if test="lastModifyBy != null">
+		LAST_MODIFY_BY,
+		</if>
+		<if test ="lastModifyTime != null">
+		LAST_MODIFY_TIME,
+		</if>
+		<if test ="parentRoleCode != null">
+		PARENT_ROLECODE,
+		</if>
+		<if test ="parentRoleName != null">
+		PARENT_ROLENAME,
+		</if>
+		<if test ="jxSource != null">
+		JX_SOURCE
+		</if>							
+		)
+		values(nextval('task_seq'),
+		<if test="roleCode != null">
+		#{roleCode},
+		</if>
+		<if test="roleName != null">
+		#{roleName},
+		</if>
+		<if test="status !=null">
+		#{status},
+		</if>
+		<if test="description !=null">
+		#{description},
+		</if>
+		<if test="createBy != null">
+		#{createBy},
+		</if>
+		<if test="createTime != null">
+		#{createTime},
+		</if>
+		<if test="lastModifyBy != null">
+		#{lastModifyBy},
+		</if>
+		<if test ="lastModifyTime != null">
+		#{lastModifyTime},
+		</if>	
+		<if test ="parentRoleCode != null">
+		#{parentRoleCode},		
+		</if>
+		<if test ="parentRoleName != null">
+		#{parentRoleName},
+		</if>	
+		<if test ="jxSource != null">
+		#{jxSource}
+		</if>						
+		)
+	</insert>
+	
+   <!--添加角色权限关系  -->
+ 	<insert id="addRoleAndRight" parameterType="map">
+		insert into jx_role_privileges (RPID,ROLE_CODE,PRIVILEGES_CODE,ROLE_SOURCE)
+		values(nextval('task_seq'),#{roleCode},#{rightCode},#{releSource})
+ 	
+ 	</insert>
+	<!--修改角色-->
+   	<update id="updateRole" parameterType="Object">
+
+   		update jx_roles  r set 
+   		role_name = #{roleName},
+   		description = #{description},
+   		status=#{status}, 
+   		<if test ="parentRoleCode != null">
+		PARENT_ROLECODE=#{parentRoleCode},
+		</if>
+		<if test ="parentRoleName != null">
+		PARENT_ROLENAME=#{parentRoleName},
+		</if>
+		<if test ="jxSource != null">
+		JX_SOURCE=#{jxSource}
+		</if>	
+   		where role_code = #{roleCode}
+   	</update>
+   <!--删除角色  -->
+   	<delete id="delRole">
+   		delete  from  jx_roles where role_code = #{roleCode}
+    </delete>
+    <!--删除角色权限关系表中的数据  -->
+    <delete id="delRoleAndRight">
+        delete  from jx_role_privileges  where role_code = #{roleCode}
+    </delete>
+    <!--获取所有角色-->
+	<select id="getAllRole" resultMap="Base_Result_Map"  parameterType="Role">
+	select * from jx_roles r
+	<where>
+		<if test="roleName !=null">
+			and r.role_name like '%${roleName}%'
+		</if>
+		<if test="status !=null">
+			and r.status = ${status}
+		</if>
+	</where>
+</select>
+
+	<select id="getAllRole2" resultMap="Base_Result_Map" >
+		select * from jx_roles r where <![CDATA[ r.role_code <> 'SUPER' ]]>
+	</select>
+
+	<select id="getRoleToUpdate" resultMap="Base_Result_Map">
+		select *  from  jx_roles r  where role_code = #{rolecode}
+	
+	</select>
+	<!--  -->
+	<select id="getRole" resultType="Integer">
+		select count(*) from jx_roles r  where role_code = #{roleCode}	
+	</select>
+	
+	<!--检查roleCode是否存在  -->
+	<select id="checkRoleCode" resultMap="Base_Result_Map">
+		select *  from jx_roles r where role_code = #{roleCode}
+	</select>
+	
+	<select id="getPageRoleSize" resultType="Integer" parameterType="map">
+		SELECT COUNT(1)
+	  	  FROM jx_roles r 
+		 WHERE 1 = 1
+		<if test="role != null and role.roleCode != null and role.roleCode != ''">
+			and r.role_code like '%${role.roleCode}%'
+		</if>
+		<if test="role != null and role.roleName != null and role.roleName != ''">
+			and r.role_name like '%${role.roleName}%'
+		</if>
+		<if test="role != null and role.status != null and role.status != ''">
+			and r.status = #{role.status}
+		</if>
+	</select>
+	<select id="getPageRoleData" resultMap="Base_Result_Map"
+	parameterType="map">
+	select 
+	r.id,r.role_code,r.role_name,
+	r.status,r.description,
+	r.create_by,
+	r.create_time
+	from jx_roles r
+	where 
+	1=1
+	<if test="role != null and role.roleCode != null and role.roleCode != ''">
+			and r.role_code like '%${role.roleCode}%'
+		</if>
+		<if test="role != null and role.roleName != null and role.roleName != ''">
+			and r.role_name like '%${role.roleName}%'
+		</if>
+		<if test="role != null and role.status != null and role.status != ''">
+			and r.status = #{role.status}
+		</if>
+	 LIMIT #{nowNum} OFFSET #{begin}
+
+</select>
+
+<select id="getRoleById" parameterType="java.lang.String" resultType="Menu">
+	select * from JX_menu where 1=1 and id in (${value})
+</select>
+
+<select id="getMenuById" parameterType="java.lang.String" resultType="Menu">
+	select b.id,b.menu_name from jx_menu b where b.privileges_code in (
+    select a.privileges_code from jx_role_privileges a where a.role_code=#{rightcode})
+</select>
+
+<select id="getAllParentRole" parameterType="map" resultMap="Base_Result_Map">
+   	select * from jx_roles a where 1=1 
+	<if test="jxSource != null">
+    and	a.jx_source=#{jxSource}
+	</if>
+</select>
+
+   <!--添加角色权限关系  -->
+<insert id="addRoleRelation" parameterType="map" >
+		insert into jx_role_relation (
+		ROLECODE,
+		ROLENAME,
+		JX_SOURCE,
+		SOURCE_ROLECODE,
+		SOURCE_ROLENAME
+		)values(
+		#{roleCode},
+		#{roleName},
+		#{jxSource},
+		#{sourceCode},
+		#{sourceName}		
+		)
+</insert>	
+<!--删除角色权限关系表中的数据  -->
+<delete id="delRoleRelation">
+    delete  from jx_role_relation  where roleCode = #{roleCode}
+</delete>
+<select id="getRoleRelationById" parameterType="java.lang.String" resultMap="Base_ResultRelation_Map">
+	select * from jx_role_relation a where a.rolecode=#{roleCode}
+</select>
+<select id="getRoleRelationList" parameterType="map" resultMap="Base_ResultRelation_Map">
+	select rel.ROLECODE, rel.ROLENAME, rel.JX_SOURCE, rel.SOURCE_ROLECODE, rel.SOURCE_ROLENAME
+    From JX_ROLETREE rt ,jx_roles rol, jx_role_relation rel 
+    where 1=1 and rt.roleid = rol.id and rol.role_code = rel.rolecode 
+    and rt.roleid = #{roleid} and rt.code = #{roleCode} and rt.type = #{type}
+</select>
+<!-- ********汇金端****************begin************************************************ -->
+    <!--获取所有角色-->
+<select id="getAllRoleHj" resultMap="Base_Result_Map"  parameterType="Role">
+	select * from jk_role@tositjk r
+	<where>
+			r.status = '0'	
+	</where>
+
+</select>
+<select id="getAllPost" resultMap="Base_ResultPost_Map">
+   	select * from jk_post@tositjk
+</select>
+<!-- ********汇金端******************end********************************************** -->
+</mapper>

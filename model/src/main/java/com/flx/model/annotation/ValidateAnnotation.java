@@ -9,5 +9,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidateAnnotation {
 	
-	String value() default "";
+	int max() default 0;//最大值
+	int[] size() default {0,0};
+	
+	public String message() default "";//default默认值
+	
 }

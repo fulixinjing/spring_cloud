@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.taskSys.dao.MenuDao">
+	<!-- 取得菜单列表  -->
+   <select id="getMenuTree" resultType="Menu" >
+   		select id,MENU_PID,MENU_NAME  From JX_MENU order by id
+   </select>
+   
+   <!-- 取得菜单信息  -->
+   <select id="getMenuInfo" resultType="Menu" parameterType="String">
+   		select * from JX_MENU where id=#{id} and menu_source='0'
+   </select>
+   
+   <!-- 取得菜单列表    -->
+   <select id="getMenuList" resultType="Menu" parameterType="String">
+   		select * from JX_MENU  where menu_Level=#{menu_level} and menu_source='0'  order by menu_sort
+   </select>
+   
+   <!-- 取得二级菜单列表  -->
+   <select id="getSecMenuList" resultType="Menu" parameterType="String">
+   		select * from JX_MENU  where menu_Level='2' and menu_source='0' and menu_status='0' and menu_pid=#{menu_pid}  order by menu_sort
+   </select>
+   
+    <!-- 取得三级菜单列表  -->
+   <select id="getThiMenuList" resultType="Menu" parameterType="String">
+   		select * from JX_MENU  where menu_pid in (
+			select ID from JX_MENU  where menu_Level='2' and menu_source='0' and menu_pid=#{menu_pid})
+		and menu_Level='3' and menu_status='0' order by menu_sort
+   </select>
+   
+    <!-- 修改菜单 -->
+   <update id="updateMenu" parameterType="Menu">
+   		update JX_MENU set
+			menu_name=#{menu_name},menu_pid=#{menu_pid},menu_url=#{menu_url},description=#{description},
+			menu_status=#{menu_status},menu_Level=#{menu_level},menu_icon=#{menu_icon},privileges_code=#{privileges_code}
+			,menu_sort=#{menu_sort},menu_source='0'
+		where id=#{id}
+   </update>
+   
+   <!-- 将下级菜单全部停用 -->
+   <update id="updateLowMenu" parameterType="String">
+   		update JX_MENU set menu_status='1' where menu_pid=#{id} and menu_source='0'
+   </update>
+   
+   <!-- 新增菜单 -->
+   <insert id="insertMenu" parameterType="Menu">
+	   insert into JX_MENU(id,menu_name,menu_pid,menu_url,menu_status,menu_source,description,menu_Level,menu_icon,privileges_code,menu_sort) 
+	   	 values(nextval('task_seq'),#{menu_name},#{menu_pid},#{menu_url},'0','0',#{description},#{menu_level},#{menu_icon},#{privileges_code},#{menu_sort}) 
+   </insert>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
