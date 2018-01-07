@@ -18,7 +18,7 @@
 
 <div class="header" style="background:#fff;">
     	<div class="box fn-clear" style="width:1440px;">
-    		<span><img src="${ctx}/css/images/logo_2.png" width="199" height="56"></span>
+    		<span><img src="${ctx}/css/images/logo_21.png" width="199" height="56"></span>
     		
     	</div>
     </div>
@@ -110,7 +110,6 @@
   // 输入框内容点击变色
   function focusMeByAll(which,defalutWord){
       var val = $(which).val();
-      alert(2);
       $(which).css("color",'#666');
       if(val==defalutWord)
         $(which).val("");
