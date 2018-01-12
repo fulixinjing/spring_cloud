@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="schedule">
+	<insert id="addSchedule" parameterType="com.chj.model.Schedule">
+		insert into schedule(name,start_date,end_date,remind,priority,remarks,create_time,user_id)
+		values(#{name},#{startDate},#{endDate},#{remind},#{priority},#{remarks},#{createTime},#{userId})
+	</insert>
+</mapper>      

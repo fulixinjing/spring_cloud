@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>artDialog</title>
+
+<script src="../artDialog.source.js?skin=default"></script>
+
+
+<script>
+	function aaa(){
+var dialog = art.dialog({
+			    title: '欢迎',
+			    content: '欢迎使用artDialog对话框组件！',
+			    icon: 'succeed',
+			    follow: document.getElementById('btn2'),
+			    ok: function(){
+			        return false;
+			    },okVal: '确定',
+			      cancelVal: '关闭',
+			    cancel: function(){
+			   	console.log(123);
+			    },fixed:true,
+			    resize:true
+			});
+	
+	}
+</script>
+</head>
+<body>
+<button class="runCode" onclick = "aaa()">运行&raquo;</button>
+</body>
+</html>

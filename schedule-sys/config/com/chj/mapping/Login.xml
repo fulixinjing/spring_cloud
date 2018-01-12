@@ -8,4 +8,8 @@
 		where user_name = #{username}
 		limit 1;
 	</select>
+	<update id="updateUser" parameterType="com.chj.model.Login">
+		update user set pass_word = #{password}
+		where id =#{id}
+	</update>
 </mapper>      

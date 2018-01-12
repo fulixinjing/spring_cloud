@@ -53,4 +53,16 @@ public class LoginController {
 		}
 		
 	}
+	/**
+	 * 用户退出
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/quit")
+	public String quit(HttpServletRequest request,HttpServletResponse response){
+		
+		request.getSession().removeAttribute(CommonUtil.LOGIN_TYPE);
+		return "login";
+	}
 }

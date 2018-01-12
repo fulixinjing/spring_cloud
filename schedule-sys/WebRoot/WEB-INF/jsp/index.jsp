@@ -10,7 +10,6 @@
 <link href="${ctx}/css/static/main.css?1=1" rel="stylesheet" type="text/css" />
 <link href="${ctx}/css/static/base-global.css" rel="stylesheet" type="text/css" />
 <link href="${ctx}/css/static/common.css?5=1" rel="stylesheet" type="text/css" />
-<link href="${ctx}/css/static/main.css?1=1" rel="stylesheet" type="text/css" />
 <link href="${ctx}/css/static/stylesheet.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/css/right.css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/css/pop.css" />
@@ -27,80 +26,90 @@
  
 $(document).ready(function(){
 	$("#leftMenu0").addClass('cur');
+			//消息提醒
 	      $('.msg-wake').click(function(){
 	          $('.m-box').show()
 	          $('#covered').show()
-	          
+	           $('.zhxx-box').hide()
 	        })
-	        
+	        //修改密码
+	        $('.xgmm-btn').click(function(){
+	        	$('.xgmm-box').show();
+	        	$('.zhxx-box').hide();
+	        	
+	        })
+	        //消息提醒关闭
 	      $('.mm-close').click(function(){
 	          $('.m-box').hide()
+	          $('.zhxx-box').hide()
 	           $('#covered').hide()
 	          
-	        })
-
+	        })	
+			//忽略全部
 	      $('.hl-msg').click(function(){
 	          $('.m-box').hide()
+	          $('.zhxx-box').hide()
+	          $('#covered').hide()
 	        })
-
+			//用户名事件
 	      $('.gly-wake').click(function(){
 	          $('.m-box').hide()
-	        })
-
-	      $('.gly-wake').click(function(){
 	          $('.zhxx-box').show()
 	          $('#covered').show()
 	        })
-
-	      $('.mm-close').click(function(){
-	          $('.zhxx-box').hide()
-	           $('#covered').hide()
-	        })
-
-	      $('.hl-msg').click(function(){
-	          $('.zhxx-box').hide()
-	        })
-
-	      $('.msg-wake').click(function(){
-	          $('.zhxx-box').hide()
-	        })
-	     
-	        $("#saveForm2").validate({  
-				rules:{
-					oldPassword:{  
-			    		remote: {
-			       			url: "${ctx}/user/check/password.do",
-			             	type: "post",
-			             	data: {  
-			             		oldPassword: function() {
-			                 		return $("#oldPassword").val();
-			              		},
-			              		userId: function() {
-			                 		return $("#userId").val();
-			              		}
-			          		}
-			       		}  
-					},
-					password:{  
-						equalTo: "#cfmPassword"
-					},						
-					cfmPassword:{  
-						equalTo: "#password"
-					}			
-				},  
-				messages:{
-					oldPassword:{  
-			    		remote: "原密码不正确！"
-			 		},
-					password:{
-						equalTo: "两次新密码不一致！"
-			 		},	 	 			
-					cfmPassword:{
-						equalTo: "两次新密码不一致！"
-			 		}		 		
-				}
-			});
+	        //窗口关闭
+        $('.tc-close').click(function(){
+                 $('.xgmm-box').hide()
+                 $('.xgtx-box').hide()
+                 $('#covered').hide()
+                 $("#oldPassword").val("");
+                 $("#password").val("");
+                 $("#cfmPassword").val("");
+                 $("#head_portrait").val("");
+                 
+                 $("#oldPW").text("");
+                 $("#newPW1").text("");
+         		  $("#newPW2").text("");
+               })
 	}); 
+	//修改密码 提交
+	function updatePW(){
+		var oldPassword = $("#oldPassword").val();
+		var password = $("#password").val();
+		var cfmPassword = $("#cfmPassword").val();
+		$("#oldPW").text("");
+		$("#newPW1").text("");
+		$("#newPW2").text("");
+		if(oldPassword == ''){
+			$("#oldPW").text("× 原密码不可为空！");
+    		return false;
+		}else if(password == ''){
+			$("#newPW1").text("× 新密码不可为空！");
+    		return false;
+		}else if(password != cfmPassword){
+			$("#newPW2").text("× 两次输入密码不一致！");
+    		return false;
+		}else{
+			$.ajax({ 
+				type : "POST",  
+				url: "${ctx}/user/checkPassword", 
+				data : {"password":oldPassword,"newPassword":password},
+				dataType : 'text',
+				async: false, 
+				success: function(data){
+						if(data == "false"){
+							$("#oldPW").text("× 原密码不正确！");
+			        		$("#oldPassword").focus();
+			        		return false;
+						}else{
+							$("#oldPW").text(" √");
+							g_alert('success','密码修改成功请重新登录!','${ctx}/login',"${ctx}"); 
+						}					
+					}
+	      	});
+		}
+		
+	}
 </script>
 
 
@@ -153,7 +162,7 @@ $(document).ready(function(){
                         </ul>
                         <div class="txt-c pd-t10 pd-b10">
                             <a href="javascript:(void);" class="cblue2 xgmm-btn">修改密码</a>
-                            <a href="${ctx}/logout.do" class="tc-close hl-msg mg-l35">退出</a>
+                            <a href="${ctx}/login/quit" class="tc-close hl-msg mg-l35">退出</a>
                         </div>
                     </div>
                 </div>
@@ -199,389 +208,36 @@ $(document).ready(function(){
     	<div class="menu-list fl" id="appwrap" style="height: 100%;overflow-y:auto; overflow-x:hidden;" >
     		<ul>
     			<li class="title">菜单栏</li>
-		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/sys/userList" >用户管理</a></li>
-		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="#" >444444444</a></li>
+		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/schedule/now" >今日安排</a></li>
+		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/kalendar/toKalendar" >日历</a></li>
+		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="#" >通讯录</a></li>
     		</ul>
     	</div>
 
     	<div class="content1" id="mainarea" style="height: 100%;" >
-    		<iframe id="mima" name="mima" width="100%" style="height:100%;overflow: hidden;" frameborder="0" src="${ctx}/welcome.do"></iframe>
+    		<iframe id="mima" name="mima" width="100%" style="height:100%;overflow: hidden;" frameborder="0" src="${ctx}/schedule/now"></iframe>
     	</div>
     </div>
-    
+    <div id="covered" onclick="closeDiv()"></div>
     <script type="text/javascript">
-   
-  $(".discribtion").hover(function(){
-                       $('#discrib').show()
-                      },function(){
-                          $('#discrib').hide()
-                         }) 
-  $(".discribtion1").hover(function(){
-                       $('#discrib1').show()
-                      },function(){
-                          $('#discrib1').hide()
-                         })                     
+    function closeDiv(){  
+	    $("#covered").hide();
+	    $('.m-box').hide()
+	    $('.zhxx-box').hide()
+	    $('.xgmm-box').hide()
+        $("#oldPassword").val("");
+        $("#password").val("");
+        $("#cfmPassword").val("");
+        $("#oldPW").text("");
+        $("#newPW1").text("");
+		$("#newPW2").text("");
+		$('.xjrw-box').hide()
+		$('.xjrw-box1').hide()
+		$('.popup-box1').hide()
+		$('.popup-box2').hide()
+		$('.popup-box3').hide()
 
-$('.popup-btn1').click(function(){
-          $('#covered').show()
-          $('.popup-box1').show()
-        })
-
-      $('.popup-btn2').click(function(){
-          $('#covered').show()
-          $('.popup-box2').show()
-        })
-    $(document).ready(function(){
-      
-
-      $('.popup-btn3').click(function(){
-          $('#covered').show()
-          $('.popup-box3').show()
-        })
-        
-       $('.xjrw-btn').click(function(){
-                  $('#covered').show()
-                  $('.xjrw-box').show()
-                  $('.zhxx-box').hide()
-                  $('.xgmm-box').hide()
-                  $('.m-box').hide()
-                  
-                })
-       
-       $('.xjrw-btn1').click(function(){
-                  $('#covered').show()
-                  $('.xjrw-box1').show()
-                })
-       
-       $('.tc-close').click(function(){
-                  $('.xgmm-box').hide()
-                  $('.xjrw-box').hide()
-                  $('.xjrw-box1').hide()
-                  $('#covered').hide()
-                  $("#content").hide();
-     			  $("#expectTime").hide();
-     			  $("#taskWorkTimePrompt").hide();
-     			  $("#taskname").val('');
-                  $("#taskContent").val('');
-				  $("#expectEndTime").val('');
-				  $("#taskWorkTime").val('');
-				  $("#taskname1").val('');
-				  $("#taskContent1").val('');
-				  $("#expectEndTime1").val('');
-				  $("#taskWorkTime1").val('');
-				  $("#projectStage").val('');
-				  $("#projectCode").val('');
-				  $("#proName").val('');
-                })
-
-            
-
-              $('.tc-btn2').click(function(){
-                  $('.xgmm-box').hide()
-                  $('.xjrw-box').hide()
-                  $('.xjrw-box1').hide()
-                  $('#covered').hide()
-                })
-
-      $('.tc-close').click(function(){
-          $('.popup-box1').hide()
-          $('.popup-box2').hide()
-          $('.popup-box3').hide()
-          $('#covered').hide()
-        })
-
-      $('.tc-btn1').click(function(){
-          $('.popup-box1').hide()
-          $('.popup-box2').hide()
-          $('.popup-box3').hide()
-          $('#covered').show()
-        })
-       $('.tc-btn11').click(function(){
-          $('.popup-box1').hide()
-          $('.popup-box2').hide()
-          $('.popup-box3').hide()
-          $('#covered').show()
-        })
-       
-
-      $('.tc-btn2').click(function(){
-          $('.popup-box1').hide()
-          $('.popup-box2').hide()
-          $('.popup-box3').hide()
-          $('#covered').hide()
-        })
-    }); 
-        
-     function cancelTask(){
-    	    $("#tasknameText").hide();
-     		$("#content").hide();
-     		$("#expectTime").hide();
-     		$("#taskWorkTimePrompt").hide();
-     		$("#taskname").val('');
-     		$("#taskContent").val('');
-			$("#expectEndTime").val('');
-			$("#taskWorkTime").val('');
-			$("#projectStage").val('');
-			$("#projectCode").val('');
-			$("#proName").val('');
-			$("#taskname1").val('');
-			$("#taskContent1").val('');
-			$("#expectEndTime1").val('');
-			$("#taskWorkTime1").val('');
-     }
-
-     function saveTask(){
-    	var taskname = $("#taskname").val();
-     	var	taskContent = $("#taskContent").val();
-     	var	expectEndTime = $("#expectEndTime").val();
-     	var	taskWorkTime = $("#taskWorkTime").val();
-     	var nowDate = $("#nowDate").val();
-     	//alert(nowDate);
-     	if(taskname == "" || taskname == null){
-            $("#tasknameText").show();
-            return false;
-        }else{
-            $("#tasknameText").hide();
-        }
-     	if(taskContent == "" || taskContent == null){
-     		$("#content").show();
-	     	return false;
-     	}else{
-     		$("#content").hide();
-     		}
-     		
-     	if(expectEndTime == "" || expectEndTime == null){
-     		$("#expectTime").show();
-     		return false;
-     		}else{
-     			$("#expectTime").hide();
-     		} 
-     	 if(expectEndTime<nowDate){
-			alert("亲！完成时间需要大于当前日期哦！！！");
-			return false;
-		} 
-		
-		/* if($.trim(taskWorkTime)!=null && $.trim(taskWorkTime)!=''){
-			var result = isInteger(taskWorkTime);
-			if(!result){
-				alert("工作量输入格式不正确，请输入整数！");
-				return false;
-			}
-		} */
-		
-		if(taskWorkTime == "" || taskWorkTime == null){
-     		$("#taskWorkTimePrompt").show();
-	     	return false;
-     	}else{
-     		$("#taskWorkTimePrompt").hide();
-     	}
-		
-		url = "${ctx}/admin/saveTask.do";
-			  $.ajax({
-				type : "POST", 
-				url : url, 
-				data : {"taskname":taskname,"taskContent":taskContent,"expectEndTime":expectEndTime,"taskWorkTime":taskWorkTime},
-				success : function(data){
-					g_alert('success','操作成功','${ctx}/index.do?menu=10000000000001',"${ctx}");
-					$("#taskname").val('');
-					$("#taskContent").val('');
-					$("#expectEndTime").val('');
-					$("#taskWorkTime").val('');
-				}
-			});
-			
-		  $('.tc-btn1').click(function(){
-                 $('.xgmm-box').hide()
-                 $('.xjrw-box').hide()
-                 $('.xjrw-box1').hide()
-                 $('#covered').hide()
-               });
-		} 
-		
-		
-		function saveTask1(){
-		var taskname = $("#taskname1").val();
-     	var	taskContent = $("#taskContent1").val();
-     	var	expectEndTime = $("#expectEndTime1").val();
-     	var	taskWorkTime = $("#taskWorkTime1").val();
-     	var	projectName = $("#proName").val();
-     	var	projectCode = $("#projectCode").val();
-     	var	projectStage = $("#projectStage").val();
-     	//var	projectStageCode = $("#projectStageCode").val();
-     	var nowDate = $("#nowDate").val();
-     	//alert(projectStageCode);
-     	if(taskname == "" || taskname == null){
-            $("#tasknameText").show();
-            return false;
-        }else{
-            $("#tasknameText").hide();
-        }
-     	
-     	if(taskContent == "" || taskContent == null){
-     		$("#content1").show();
-	     	return false;
-     	}else{
-     		$("#content1").hide();
-     		}
-     		
-     	if(expectEndTime == "" || expectEndTime == null){
-     		$("#expectTime1").show();
-     		return false;
-     		}else{
-     			$("#expectTime1").hide();
-     		} 
-     	 if(expectEndTime<nowDate){
-			alert("亲！完成时间需要大于当前日期哦！！！");
-			return false;
-		} 
-		
-		if(taskWorkTime == "" || taskWorkTime == null){
-     		$("#taskWorkTimePrompt1").show();
-	     	return false;
-     	}else{
-     		$("#taskWorkTimePrompt1").hide();
-     	}
-		
-		if(projectName == "" || projectName == null){
-			$("#selText1").show();
-			$("#projectCode1").hide();
-     		return false;
-     		}else{
-     			$("#selText1").hide();
-     			if(projectCode == "" || projectCode == null){
-				$("#projectCode1").show();
-	     		return false;
-	     		}else{
-	     			$("#projectCode1").hide();
-				}
-		}
-		
-		if(projectStage == "" || projectStage == null){
-			$("#projectStage1").show();
-     		return false;
-     		}else{
-     			$("#projectStage1").hide();
-		}
-		
-			
-		url = "${ctx}/admin/saveTask.do";
-			  $.ajax({
-				type : "POST", 
-				url : url, 
-				data : {"taskname":taskname,"taskContent":taskContent,"expectEndTime":expectEndTime,"taskWorkTime":taskWorkTime,"projectName":projectName,"projectCode":projectCode,"projectStage":projectStage},
-				success : function(data){
-					g_alert('success','操作成功','${ctx}/index.do?menu=10000000000001',"${ctx}");
-					$("#taskname1").val('');
-					$("#projectStage").val('');
-					$("#projectCode").val('');
-					$("#proName").val('');
-					$("#taskContent1").val('');
-					$("#expectEndTime1").val('');
-					$("#taskWorkTime1").val('');
-				}
-			});
-			
-          $('.tc-btn11').click(function(){
-                 $('.xgmm-box').hide()
-                 $('.xjrw-box').hide()
-                 $('.xjrw-box1').hide()
-                 $('#covered').hide()
-               });
-		} 
-		
-		
-    function upMessage(){
-		url = "${ctx}/upMessage.do";
-			  $.ajax({
-				type : "POST", 
-				url : url,
-				data : {},
-				success : function(){
-					$("#num-bg").html("");
-					$("#num-bg").removeClass("num-bg");
-					$("#allIgnore").html("<span><font color=\"gray\">忽略全部</font></span>");
-					$("#ulId li").remove();
-					$('#covered').hide();
-					$('.m-box').hide()
-				}
-			});
-		} 
-	function goingPage(id){
-	
-		  url = "${ctx}/message/messageHandle.do";
-		  $.ajax({
-			type : "GET", 
-			url : url,
-			data : "id="+id, 
-			dataType : "json", 
-			success : function(data){
-				if(data.list!=null){
-					if(data.list.length>0){
-						$("#num-bg").html(data.list.length);
-						$("#allIgnore").html("<a href=\"javascript:(void);\" class=\"cblue2 hl-msg\" onclick=\"upMessage()\">忽略全部</a>");
-					}else{
-						$("#num-bg").html("");
-						$("#num-bg").removeClass("num-bg");
-						$("#allIgnore").html("<span><font color=\"gray\">忽略全部</font></span>");
-						$("#showMessageId").hide();
-					}
-					$("#ulId li").remove();
-					for ( var i = 0; i < data.list.length; i++) {
-						$("#ulId").append("<li><a href=\"javascript:(void);\" onclick=\"goingPage("+(data.list[i]).id+")\" >"+(data.list[i]).title+"</a></li>");
-					}
-					//--------------- 跳转到工作台-------
-					if(data.focusMenu=="11"){
-						 $(".cur").removeClass('cur');
-						 $("#leftMenu0").addClass('cur');
-					}
-					if(data.focusMenu=="21"){
-						 $(".cur").removeClass('cur');
-						 $("#leftMenu0").addClass('cur');
-					}
-					if(data.focusMenu=="31"){
-						 $(".cur").removeClass('cur');
-						 $("#leftMenu0").addClass('cur');
-					}
-					//--------------- 跳转到我的任务-------
-					if(data.focusMenu=="12"){
-						 $(".cur").removeClass('cur');
-						 $("#leftMenu1").addClass('cur');
-					}
-					if(data.focusMenu=="32"){
-						 $(".cur").removeClass('cur');
-						 $("#leftMenu1").addClass('cur');
-					}
-					//--------------- 跳转到我创建的任务-------
-					if(data.focusMenu=="22"){
-						 $(".cur").removeClass('cur');
-						 $("#leftMenu2").addClass('cur');
-					}
-					//--------------- 跳转到我负责的任务-------
-					if(data.focusMenu=="23"){
-						 $(".cur").removeClass('cur');
-						 $("#leftMenu3").addClass('cur');
-					}
-				}
-				var newUrl="${ctx}"+data.result+"?flag="+data.flag+"&taskInfoId="+data.taskInfoId+"&taskStatus="+data.taskStatus;
-				$("#mima").attr("src",newUrl);
-				$('#covered').hide();
-				$('.m-box').hide()
-			}
-		});
-		
-	}	
-	  
-	  $(document).ready(function(){
-		var upPass = $("#upPass").val();
-	 	if(upPass==2){
-	                  $('#covered2').show()
-	                  $('.xgmm-box1').show()
-		}else{
-			 $('#covered2').hide()
-	         $('.xgmm-box1').hide()
-	         }
-        
-      }); 
+	}; 
   </script>
 
 </body>
