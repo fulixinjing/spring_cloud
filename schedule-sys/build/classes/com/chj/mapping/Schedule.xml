@@ -6,4 +6,62 @@
 		insert into schedule(name,start_date,end_date,remind,priority,remarks,create_time,user_id)
 		values(#{name},#{startDate},#{endDate},#{remind},#{priority},#{remarks},#{createTime},#{userId})
 	</insert>
+	
+	<select id="getfindCount" resultType="int">
+		select count(1) from schedule
+		<include refid="where_sql" />
+	</select>
+	<select id="getfindList" resultType="com.chj.model.Schedule">
+		select id,name,start_date startDate,end_date endDate,remind,priority,remarks,create_time createTime,user_id userId
+		from schedule 
+		<include refid="where_sql" />
+		${limitSql}
+	</select>
+	
+	<sql id="where_sql">
+		where 1=1 
+		<if test="month != null and month !=''">
+			and start_date LIKE '${month}%'
+		</if>
+		<if test="type != null and type ==1">
+			and end_date &lt; NOW()
+		</if>
+		<if test="type != null and type ==2">
+			and start_date &lt; NOW() AND end_date &gt; NOW()
+		</if>
+		<if test="type != null and type ==3">
+			and start_date &gt; NOW()
+		</if>
+	</sql>
+	<delete id="delSchedule" parameterType="com.chj.model.Schedule">
+		delete from schedule where id = #{id}
+	</delete>
+	
+	<select id="getScheduleById" resultType="com.chj.model.Schedule" parameterType="com.chj.model.Schedule">
+		select id,name,start_date startDate,end_date endDate,remind,priority,remarks,create_time createTime,user_id userId
+		from schedule where id = #{id}
+	</select>
+	<update id="updateSchedule" parameterType="com.chj.model.Schedule">
+		update schedule set name = #{name},
+			start_date = #{startDate},
+			end_date = #{endDate},
+			remind = #{remind},
+			priority = #{priority},
+			remarks = #{remarks}
+		where id = #{id}
+	</update>
+	<select id="getMonthCount" parameterType="com.chj.model.PersonSys" resultType="com.chj.model.PersonSys">
+		SELECT COUNT(s1.id) normalFinish,COUNT(s2.id) haveInHand,COUNT(s3.id) beforeStart 
+		FROM SCHEDULE s
+		LEFT JOIN SCHEDULE s1 ON s.id = s1.id AND s1.end_date &lt; NOW()
+		LEFT JOIN SCHEDULE s2 ON s.id = s2.id AND s2.start_date &lt; NOW() AND s2.end_date &gt; NOW()
+		LEFT JOIN SCHEDULE s3 ON s.id = s3.id AND s3.start_date &gt; NOW()
+		WHERE s.start_date LIKE '${month}%'
+	</select>
+	
+	<select id="remind" parameterType="string" resultType="java.util.List">
+		SELECT NAME,start_date 
+		FROM SCHEDULE
+		WHERE start_date &lt; NOW() AND start_date &gt; DATE_SUB(NOW(), INTERVAL 1 HOUR) AND remind = '1'
+	</select>
 </mapper>      

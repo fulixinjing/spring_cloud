@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.chj.dao.LoginDao;
 import com.chj.dao.UserDao;
 import com.chj.model.Login;
+import com.chj.model.PersonSys;
 import com.chj.service.LoginService;
 import com.chj.service.UserService;
 
@@ -25,6 +26,14 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUser(Login user) {
 		userDao.updateUser(user);
+	}
+	/**
+	 * 获取月统计
+	 */
+	@Override
+	public PersonSys getMonthCount(PersonSys personSys) {
+		
+		return userDao.getMonthCount(personSys);
 	}
 	
 

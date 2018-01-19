@@ -110,6 +110,27 @@ $(document).ready(function(){
 		}
 		
 	}
+	var t2 = window.setInterval("hello()",3000);
+	var x=1;
+	function hello(){
+		
+		$.ajax({ 
+			type : "POST",  
+			url: "${ctx}/schedule/toRemind", 
+			data : {},
+			dataType : 'text',
+			async: false, 
+			success: function(data){
+					var count = data.count;
+					if(count > 0){
+						var list = data.list;
+						
+					}
+				}
+      	});
+		$('#num-bg').text(x);
+		$('#ulId').text('aaaaaaaaa');
+	}
 </script>
 
 
@@ -209,8 +230,8 @@ $(document).ready(function(){
     		<ul>
     			<li class="title">菜单栏</li>
 		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/schedule/now" >今日安排</a></li>
-		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/kalendar/toKalendar" >日历</a></li>
 		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="#" >通讯录</a></li>
+		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/user/personSys" >个人中心</a></li>
     		</ul>
     	</div>
 

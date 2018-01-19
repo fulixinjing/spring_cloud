@@ -41,8 +41,10 @@ public class Page<T> implements Serializable {
 	 /**
 	  * content 每页的内容
 	  */
-	 private List<T> content;
-
+	 private List<T> list;
+	 //分页limit 开始
+	 private String limitSql;
+	 
 	 // 以下set方式是需要赋值的
 	 /**
 	  * 设置当前页 <br>
@@ -70,15 +72,20 @@ public class Page<T> implements Serializable {
 	 public void setRecordTotal(int recordTotal) {
 	     this.recordTotal = recordTotal;
 	     otherAttr();
+	     settingLimit();
 	 }
 
-	 /**
+	 private void settingLimit() {
+		this.limitSql = "limit "+(this.currentPage-1)*this.pageSize+","+this.pageSize;
+	}
+
+	/**
 	  * 设置分页内容 <br>
 	  *
 	  * @param content
 	  */
-	 public void setContent(List<T> content) {
-	     this.content = content;
+	 public void setList(List<T> list) {
+	     this.list = list;
 	 }
 
 	 /**
@@ -139,17 +146,22 @@ public class Page<T> implements Serializable {
 	     return lastPage;
 	 }
 
-	 public List<T> getContent() {
-	     return content;
+	 public List<T> getList() {
+	     return list;
 	 }
 
-	 @Override
+	 
+	 public String getLimitSql() {
+		return limitSql;
+	}
+
+	@Override
 	 public String toString() {
 	     return "Pager [currentPage=" + currentPage + ", pageSize=" + pageSize
 	             + ", pageTotal=" + pageTotal + ", recordTotal=" + recordTotal
 	             + ", previousPage=" + previousPage + ", nextPage=" + nextPage
 	             + ", firstPage=" + firstPage + ", lastPage=" + lastPage
-	             + ", content=" + content + "]";
+	             + ", list=" + list + "]";
 	 }
 
                                                                                                                                                  

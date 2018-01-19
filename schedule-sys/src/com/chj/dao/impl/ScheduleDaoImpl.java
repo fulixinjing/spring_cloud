@@ -1,5 +1,8 @@
 package com.chj.dao.impl;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,39 @@ public class ScheduleDaoImpl implements ScheduleDao{
 	public void addSchedule(Schedule schedule) {
 		
 		sqlSession.insert("schedule.addSchedule",schedule);
+	}
+
+	@Override
+	public int getfindCount(Schedule schedule) {
+		
+		return (Integer) sqlSession.selectOne("schedule.getfindCount",schedule);
+	}
+
+	@Override
+	public List<Schedule> getfindList(Schedule schedule) {
+		
+		return sqlSession.selectList("schedule.getfindList",schedule);
+	}
+
+	@Override
+	public void delSchedule(Schedule schedule) {
+		sqlSession.delete("schedule.delSchedule",schedule);
+	}
+
+	@Override
+	public Schedule getScheduleById(Schedule schedule) {
+		
+		return (Schedule) sqlSession.selectOne("schedule.getScheduleById",schedule);
+	}
+
+	@Override
+	public void updateSchedule(Schedule schedule) {
+		sqlSession.update("schedule.updateSchedule",schedule);
+	}
+
+	@Override
+	public List<HashMap<String, Object>> remind(String id) {
+		return (List<HashMap<String, Object>>) sqlSession.selectOne("schedule.remind",id);
 	}
 
 	

@@ -38,7 +38,7 @@
 		height:100%;
 		overflow:hidden;
 	}
-	#bodyTR  td{
+	.bodyTR  td{
 		text-align:center;
 	}	
 </style>
@@ -46,27 +46,18 @@
 <form id ="f1" action="${ctx}/schedule/now" method="POST">
 <input type="hidden" id="page" name="currentPage" value="${page.currentPage}" />
 <input type="hidden" id="maxResult" name="pageSize" value="${page.pageSize}" />
+<input type="hidden"  name="type" value="${page.type}" />
+<input type="hidden"  name="month" value="${page.month}" />
 <input type="hidden" id="selectFlag" name="selectFlag" >
 <div class="TAB_right">
-<h1><b>位置：</b><a href="###">首页</a><span>&gt;</span><a href="###">今日安排</a></h1>
-	<div class="retrieve_list">
-			<table class="retrieve_table" width="100%" cellpadding="0" cellspacing="0">
-					<tr>
-						<td >&nbsp;&nbsp;
-							<input class="form_now marginr10 xjrw" type="button" value="新建任务">
-							<input class="form_now marginr10" type="button" value="查询" onclick="selectSubmit()">&nbsp;
-						</td>																	
-					</tr>		
-			</table>
-	</div>
 	<div class="infor_base">
 	<div  class="btn_operate">
 		</div>
 		   <div class="container_12">
         	<div class="grid_8">
         	<form id="listForm" name="listForm" method="post">
-        		<table class="fancyTable" id="myTable02" cellpadding="0" cellspacing="0" style="table-layout:fixed;">
-        		    <thead>
+        		<table class="fancyTable" id="myTable02" cellpadding="0" cellspacing="0" style="table-layout:fixed;width: 100%">
+        		        <thead class="bodyTR">
         		        <tr>
         		        	<th style="width:35px;">序号</th>
         		        	<th><a href="#" style="color:black">任务名称</a></th>
@@ -76,11 +67,9 @@
         		        	<th><a href="#" style="color:black">优先等级</a></th>
         		        	<th><a href="#" style="color:black">备注</a></th>
         		        	<th><a href="#" style="color:black">创建时间</a></th>
-        		        	<th><a href="#" style="color:black">操作</a></th>
-        		            
         		        </tr>
-        		    </thead>
-        		    <tbody id="bodyTR">
+        		         <thead>
+        		    <tbody calss="bodyTR">
         		    <c:forEach items="${page.list}" var="task" varStatus="status">
         		        <tr>
         		         <td>${status.index + 1}</td>
@@ -99,9 +88,6 @@
         		         <td>${task.remarks}</td>
         		         <td>
         		         <fmt:formatDate value="${task.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
-        		         </td>
-        		         <td>
-        		         	<input class="form_now marginr10 updateTask" type="button" taskId="${task.id}" value="修改"><input class="form_now m7 delTask" type="button" taskId="${task.id}"  value="删除" >
         		         </td>
         		        </tr>
         		        </c:forEach>
@@ -123,7 +109,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(".fht-tbody").css("height", "85%");
-		$(".grid_8").css("height","70%");
+		$(".grid_8").css("height","95%");
 	})
 	//到指定的分页页面
 	function topage(page){
@@ -140,71 +126,6 @@
 		$("#f1").attr("action","${ctx}/schedule/now");
 		$("#f1").submit();
 	}
-	function selectSubmit(){
-		$("#f1").attr("method","POST");
-		$("#f1").attr("action","${ctx}/schedule/now");
-		$("#f1").submit();
-	}
-	$(function(){
-		$(".xjrw").click(function(){
-			
-			 art.dialog.open("${ctx}/schedule/toAdd", {
-		         id: 'flag',
-		         title: '新建任务',
-		         lock:true,
-		         width:500,
-		     	 height:300
-		     },  
-		     false);
-		})
-		$(".updateTask").click(function (){
-			var taskId = $(this).attr('taskId');
-			 art.dialog.open("${ctx}/schedule/toUpate?id="+taskId, {
-		         id: 'flag',
-		         title: '修改任务',
-		         lock:true,
-		         width:500,
-		     	 height:300
-		     },  
-		     false);
-		})
-		$(".delTask").click(function (){
-			var taskId = $(this).attr('taskId');
-			art.dialog({  
-			    content: '确定要删除吗',  
-			    ok: function () { 
-			    	var win = art.dialog.open.origin;//来源页面
-			    	$.ajax({
-						type : 'post',
-						url : "${ctx}/schedule/delSchedule",
-						data :{'id' : taskId},
-						cache : false,
-						async : false,
-						
-						success : function(result) {
-							if(result== 'true'){
-								
-					 			art.dialog.alert("删除成功！",function (){
-					 				art.dialog.close(); 
-					 				win.location ="${ctx}/schedule/now";
-					 			});
-							}else{
-								art.dialog.alert('删除失败！', '提示信息');
-							}
-						},
-						error : function() {
-							art.dialog.alert('请求异常！', '提示信息');
-						}
-					}); 
-			    	art.dialog.alert("删除成功！",function (){
-		 				art.dialog.close(); 
-		 				win.location ="${ctx}/schedule/now";
-		 			});
-			    },  
-			    cancelVal: '关闭',  
-			    cancel: true //为true等价于function(){}  
-			});  
-		})
-	})
+	
 </script>
 </html>

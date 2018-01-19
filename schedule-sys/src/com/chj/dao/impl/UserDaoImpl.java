@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.chj.dao.LoginDao;
 import com.chj.dao.UserDao;
 import com.chj.model.Login;
+import com.chj.model.PersonSys;
 
 /**
  * 用户 dao
@@ -23,6 +24,12 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public void updateUser(Login user) {
 		sqlSession.update("login.updateUser",user);
+	}
+
+	@Override
+	public PersonSys getMonthCount(PersonSys personSys) {
+		
+		return (PersonSys) sqlSession.selectOne("schedule.getMonthCount",personSys);
 	}
 	
 

@@ -12,6 +12,8 @@ import com.chj.pageUtil.Page;
  */
 public class Schedule extends Page<Schedule>{
 
+	private static final long serialVersionUID = -1201693511977286724L;
+	
 	private String id;
 	//名称
 	private String name; 
@@ -29,6 +31,10 @@ public class Schedule extends Page<Schedule>{
 	private String userId;
 	//创建时间
 	private Date createTime;
+	//月份
+	private String month;
+	//类型 1：已完成，2：进行中，3：未开始
+	private String type;
 	
 	public String getId() {
 		return id;
@@ -83,6 +89,18 @@ public class Schedule extends Page<Schedule>{
 	}
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+	public String getMonth() {
+		return month;
+	}
+	public void setMonth(String month) {
+		this.month = month;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	

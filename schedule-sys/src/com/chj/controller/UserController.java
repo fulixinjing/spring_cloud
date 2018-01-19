@@ -5,11 +5,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.chj.model.Login;
+import com.chj.model.PersonSys;
+import com.chj.model.Schedule;
 import com.chj.service.UserService;
 import com.chj.util.CommonUtil;
 import com.chj.util.StringUtil;
@@ -41,5 +44,21 @@ public class UserController {
 			return "true";
 		}
 		return "false";
+	}
+	/**
+	 * 个人中心
+	 * @param personSys
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/personSys")
+	public String personSys(PersonSys personSys,Model model){
+		if(StringUtil.isEmpty(personSys.getMonth())){
+			personSys.setMonth(StringUtil.newDate());
+		}
+		PersonSys personCount = userService.getMonthCount(personSys);
+		personCount.setMonth(personSys.getMonth());
+		model.addAttribute("personSys",personCount);
+		return "personSys";
 	}
 }

@@ -1,6 +1,8 @@
 package com.chj.util;
 
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +65,16 @@ public class StringUtil {
 		return hexValue.toString();
 
 	}
+	/**
+	 * 获取当前月份
+	 * @return
+	 */
+	public static String newDate(){
+		SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM");
+		String date = sdf.format(new Date());
+		return date;
+	}
 	public static void main(String[] args) {
-		System.out.println(MD5String("123"));
+		System.out.println(newDate());
 	}
 }
