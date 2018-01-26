@@ -2,6 +2,7 @@ package com.chj.dao.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
@@ -60,8 +61,15 @@ public class ScheduleDaoImpl implements ScheduleDao{
 	}
 
 	@Override
-	public List<HashMap<String, Object>> remind(String id) {
-		return (List<HashMap<String, Object>>) sqlSession.selectOne("schedule.remind",id);
+	public List<Schedule> remind(String id) {
+		return sqlSession.selectList("schedule.remind",id);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Map<String, Object>> getCount(Schedule schedule) {
+		List<Map<String, Object>> selectList = sqlSession.selectList("schedule.getCount",schedule);
+		return selectList;
 	}
 
 	

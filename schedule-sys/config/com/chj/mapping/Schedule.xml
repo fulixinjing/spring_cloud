@@ -59,9 +59,14 @@
 		WHERE s.start_date LIKE '${month}%'
 	</select>
 	
-	<select id="remind" parameterType="string" resultType="java.util.List">
-		SELECT NAME,start_date 
+	<select id="remind" parameterType="string" resultType="com.chj.model.Schedule">
+		SELECT NAME,start_date startDate
 		FROM SCHEDULE
 		WHERE start_date &lt; NOW() AND start_date &gt; DATE_SUB(NOW(), INTERVAL 1 HOUR) AND remind = '1'
+	</select>
+	<select id="getCount" parameterType="com.chj.model.Schedule" resultType="Map">
+		SELECT  start_date startDate,COUNT(id) count
+		FROM (SELECT DATE_FORMAT(start_date,'%Y-%m-%d') start_date,id  FROM SCHEDULE WHERE start_date &gt; UTC_DATE() AND start_date &lt;= DATE_ADD(UTC_DATE(), INTERVAL 1 MONTH) and user_id =#{userId}) a
+		GROUP BY start_date
 	</select>
 </mapper>      

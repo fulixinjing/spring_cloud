@@ -33,7 +33,7 @@
         	<td colspan="2">任务名称:<input type="text" class="input1" id="name" name="name"></td>
         </tr>
         <tr>
-        	<td colspan="2">开始时间:<input style="width: 170px;" readonly="readonly" type="text" id="expectEndTime" name="startDate" 
+        	<td colspan="2">开始时间:<input style="width: 170px;" readonly="readonly" type="text" id="expectEndTime" name="startDate" value="${date}"
 	                         onclick="WdatePicker()" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="Wdate" value="">
 			</td>
         </tr>
@@ -89,8 +89,13 @@
 						if(result== 'true'){
 							
 				 			art.dialog.alert("保存成功！",function (){
-					 		    art.dialog.close();  
-					 		    win.location ="${ctx}/schedule/now";
+					 		    art.dialog.close(); 
+					 		    if('${type}' =='1'){
+					 		    	
+					 		   		 win.location ="${ctx}/schedule/kalendar";
+					 		    }else{
+					 		   		 win.location ="${ctx}/schedule/now";
+					 		    }
 				 			});
 						}else{
 							art.dialog.alert('保存失败！', '提示信息');

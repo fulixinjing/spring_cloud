@@ -29,7 +29,7 @@
 					</h2>
 					<div class="fn-clear search-box mg-t15 fz14">
 	                     <span class="fl mg-l10">
-	                        	 考勤月份：<input readonly="readonly" type="text" id="imTime" name="imTime" value="${personSys.month }" onclick="WdatePicker({onpicking:function(dp){ timeSelect(dp.cal.getNewDateStr()) },skin:'whyGreen',dateFmt:'yyyy-MM',maxDate:'%y-%M'})" onfocus="WdatePicker({onpicking:function(dp){ timeSelect(dp.cal.getNewDateStr()) },skin:'whyGreen',dateFmt:'yyyy-MM',maxDate:'%y-%M'})" class="Wdate" style="width:120px;border:0px;">
+	                        	 日程月份：<input readonly="readonly" type="text" id="imTime" name="imTime" value="${personSys.month }" onclick="WdatePicker({onpicking:function(dp){ timeSelect(dp.cal.getNewDateStr()) },skin:'whyGreen',dateFmt:'yyyy-MM',maxDate:'%y-%M'})" onfocus="WdatePicker({onpicking:function(dp){ timeSelect(dp.cal.getNewDateStr()) },skin:'whyGreen',dateFmt:'yyyy-MM',maxDate:'%y-%M'})" class="Wdate" style="width:120px;border:0px;">
 	                     </span>
 	                     <a class="fl mg-l20 lh30 fz14 blue" onclick="findAttenceDetails()">查看详情</a>
 	                </div>
@@ -48,13 +48,12 @@
 	                		<p class="fz14 mg-t5 txt-c">未开始</p>
 	                	</div>
 	                </div>
-	               <!-- <div class="mg-l20 lh30 fz14 blue"><font>说明：新员工显示的考勤信息和实际会有偏差，下个月考勤数据会符合实际情况。</font></div> -->
 	                
 				</div>
 				<div class="pd-b30 mg-l15 pd-t30">
 					<h2 class="fz16">个人设置</h2>
 					<div class="fn-clear search-box mg-t15 fz14">
-	                     <a class="fl lh30 fz14 blue tc-btn" >考勤规则设置</a>
+	                     <a class="fl lh30 fz14 blue tc-btn" >提醒规则设置</a>
 	                     <a class="fl mg-l30 lh30 fz14 blue xgmm-btn">修改密码</a>
 	                     <a class="fl mg-l30 lh30 fz14 blue xgtx-btn">上传头像</a>
 	                </div>
@@ -68,7 +67,7 @@
     <div class="popup popup-box1" style="margin-left:-195px;">
     	<div class="tc-box">
     		<div class="title fn-clear">
-                    <span>设置考勤规则</span>
+                    <span>设置提醒规则</span>
                     <a href="javascript:(void);" class="tc-close fr"></a>
                 </div>
                 <ul class="pd-t25" style="padding-left:35%;" >

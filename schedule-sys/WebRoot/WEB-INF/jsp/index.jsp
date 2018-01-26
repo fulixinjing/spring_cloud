@@ -118,18 +118,26 @@ $(document).ready(function(){
 			type : "POST",  
 			url: "${ctx}/schedule/toRemind", 
 			data : {},
-			dataType : 'text',
+			dataType : 'json',
 			async: false, 
 			success: function(data){
-					var count = data.count;
-					if(count > 0){
-						var list = data.list;
-						
+				$("#ulId").text("");
+				if(data!=null){
+					$("#num-bg").show();
+					for(var i = 0; i<data.length;i++){
+						var txt="<li><a href='javascript:(void);' onclick='goingPage(${message.id})' >任务【"+data[i].name+"】就要开始啦！</a></li>";               // 以 HTML 创建新元素
+						$("#ulId").append(txt); 
+						$('#num-bg').text(data.length);
 					}
+				}else{
+					$("#num-bg").hide();
 				}
+			},
+			error:function(data){
+				alert(111);
+			}
       	});
-		$('#num-bg').text(x);
-		$('#ulId').text('aaaaaaaaa');
+		//$('#ulId').text('aaaaaaaaa');
 	}
 </script>
 
@@ -146,7 +154,7 @@ $(document).ready(function(){
                 <div class="message">
                     <a href="#" class="cblue1 msg-wake">消息提醒&nbsp; <img src="${ctx}/css/images/hd-arrow.png">
 	                    	<div class="upMessageTask">
-		                    	<span class="num-bg" id="num-bg">1</span>
+		                    	<span class="num-bg" id="num-bg" style="display: none"></span>
 		                    </div>
                     </a>
                     <div class="m-box hide" id="showMessageId">
@@ -156,9 +164,7 @@ $(document).ready(function(){
                             <a href="javascript:(void);" class="mm-close fr"></a>
                         </div>
 	                        <ul id="ulId">
-	                            <c:forEach items="${mlist}" var="message" >					
-									<li><a href="javascript:(void);" onclick="goingPage(${message.id})" >${message.title}</a></li>
-								</c:forEach>
+									<li><a href="javascript:(void);" onclick="goingPage(${message.id})" >你好你好</a></li>
 	                        </ul>
 		                    <div class="txt-r pd-t10 pd-b10" id="allIgnore"><a href="javascript:(void);" class="cblue2 hl-msg" onclick="upMessage()">忽略全部</a></div>
                         
@@ -230,7 +236,7 @@ $(document).ready(function(){
     		<ul>
     			<li class="title">菜单栏</li>
 		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/schedule/now" >今日安排</a></li>
-		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="#" >通讯录</a></li>
+		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/schedule/kalendar" >日历</a></li>
 		    	<li id="" name="leftMenu" ><a target="mima" onclick="leftColor('1');" href="${ctx}/user/personSys" >个人中心</a></li>
     		</ul>
     	</div>

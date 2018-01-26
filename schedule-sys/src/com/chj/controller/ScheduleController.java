@@ -1,5 +1,9 @@
 package com.chj.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +11,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,11 +54,38 @@ public class ScheduleController {
 		return "now_schedule";
 	}
 	/**
+	 * 日历
+	 * @return
+	 */
+	@RequestMapping("/kalendar")
+	public String kalendar(Schedule schedule,Model model,HttpServletRequest request){
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+	    cal.setTime(new Date());
+	    cal.add(Calendar.MONTH, 1);
+	    String endDate = sdf.format(cal.getTime());
+	    
+	    Login login = (Login) request.getSession().getAttribute(CommonUtil.LOGIN_TYPE);
+		schedule.setUserId(login.getId());
+		List<Map<String, Object>> count = scheduleService.getCount(schedule);
+	    model.addAttribute("endDate",endDate);
+	    model.addAttribute("count", JSONArray.fromObject(count));
+		
+		return "kalendar";
+	}
+	/**
 	 * 跳转 新增页面
 	 * @return
 	 */
 	@RequestMapping("/toAdd")
-	public String toAddSchedule(){
+	public String toAddSchedule(Model model ,String date){
+		if(!StringUtil.isEmpty(date)){
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		   date =date+" "+sdf.format(new Date());
+		   model.addAttribute("date",date);
+		   model.addAttribute("type","1");
+		}
 		
 		return "addSchedule";
 	}
@@ -96,16 +130,20 @@ public class ScheduleController {
 	@ResponseBody
 	@RequestMapping("/delSchedule")
 	public String delSchedule(Schedule schedule){
-		
 		scheduleService.delSchedule(schedule);
 		return "true";
 	}
 	
-	@ResponseBody
 	@RequestMapping("/toRemind")
-	public Map<String,Object> toRemind(HttpServletRequest request){
+	public void toRemind(HttpServletRequest request,HttpServletResponse response) throws IOException{
 		Login login = (Login) request.getSession().getAttribute(CommonUtil.LOGIN_TYPE);
-		HashMap<String, Object> remind = scheduleService.remind(login.getId());
-		return remind;
+		List<Schedule> remind = scheduleService.remind(login.getId());
+		 
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter writer = response.getWriter();
+		writer.print(JSONArray.fromObject(remind).toString());
+		writer.flush();
+		writer.close();
+		return ;
 	}
 }

@@ -2,6 +2,7 @@ package com.chj.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.chj.model.Schedule;
 import com.chj.pageUtil.Page;
@@ -18,7 +19,9 @@ public interface ScheduleService {
 
 	void updateSchedule(Schedule schedule);
 
-	HashMap<String, Object> remind(String id);
+	List<Schedule> remind(String id);
+
+	List<Map<String, Object>> getCount(Schedule schedule);
 
 
 

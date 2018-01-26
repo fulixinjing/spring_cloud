@@ -2,6 +2,7 @@ package com.chj.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,12 +69,17 @@ public class ScheduleServiceImpl implements ScheduleService{
 	}
 
 	@Override
-	public HashMap<String, Object> remind(String id) {
-		 List<HashMap<String, Object>> remind = scheduleDao.remind(id);
-		 HashMap<String, Object> remindMap = new HashMap<String, Object>();
-		 remindMap.put("count", remind.size());
-		 remindMap.put("list", remind);
-		 return remindMap;
+	public List<Schedule> remind(String id) {
+		 List<Schedule> remind = scheduleDao.remind(id);
+		
+		 return remind;
+	}
+	/**
+	 * 分日期统计每天任务数量
+	 */
+	@Override
+	public List<Map<String, Object>> getCount(Schedule schedule) {
+		return scheduleDao.getCount(schedule);
 	}
 	
 	
