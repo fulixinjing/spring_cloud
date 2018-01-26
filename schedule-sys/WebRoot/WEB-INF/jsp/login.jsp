@@ -44,7 +44,6 @@
               </li>
             </ul>
             <div class="txt-c mg-t15">
-             <!--  <a href="javascript:formSubmit();" class="login-btn">登&nbsp;&nbsp;录</a> -->
              <input class="login-button" type="submit" value="登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录" />
              
             </div>

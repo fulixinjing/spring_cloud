@@ -122,7 +122,7 @@ $(document).ready(function(){
 			async: false, 
 			success: function(data){
 				$("#ulId").text("");
-				if(data!=null){
+				if(data!=null && data.length > 0){
 					$("#num-bg").show();
 					for(var i = 0; i<data.length;i++){
 						var txt="<li><a href='javascript:(void);' onclick='goingPage(${message.id})' >任务【"+data[i].name+"】就要开始啦！</a></li>";               // 以 HTML 创建新元素
