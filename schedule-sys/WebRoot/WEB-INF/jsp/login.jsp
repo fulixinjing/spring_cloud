@@ -12,7 +12,8 @@
 <script type="text/javascript" src="${ctx}/js/static/jquery/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/static/jquery/jquery.cookie.js"></script>
 <script type="text/javascript" src="${ctx}/js/util/common.js"></script>
-<script type="text/javascript" src="${ctx}/js/alert/g_alert.js?1=1"></script>
+<script src="${ctx}/js/artDialog4.1.7/artDialog.source.js?skin=aero"></script>
+<script src="${ctx}/js/artDialog4.1.7/iframeTools.source.js"></script>
 <script type="text/javascript">
 	if(window!=top){
  		window.parent.location.href="${ctx}/login";
@@ -206,6 +207,7 @@
 				return false;
 			}
 		});
+		var win = art.dialog.open.origin;//来源页面
 		if($("#msg").text() ==""){
 			$.ajax({
 				type:"POST",
@@ -215,7 +217,9 @@
 				async:false, //false 同步 
 				success:function(data){
 					if(data =='true'){
-						g_alert('success','注册成功!','${ctx}/login',"${ctx}"); 
+						art.dialog.alert("注册成功！",function (){
+			 				win.location ="${ctx}/schedule/now";
+			 			});
 					}else if(data =='1'){
 						$("#msg").text("登陆名已存在！");
 					}

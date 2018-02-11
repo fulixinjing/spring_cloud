@@ -18,6 +18,8 @@ public class PersonSys {
 	
 	//尚未开始
 	private int beforeStart = 0;
+	
+	private String userId;
 
 	public String getMonth() {
 		return month;
@@ -49,6 +51,14 @@ public class PersonSys {
 
 	public void setBeforeStart(int beforeStart) {
 		this.beforeStart = beforeStart;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
 	

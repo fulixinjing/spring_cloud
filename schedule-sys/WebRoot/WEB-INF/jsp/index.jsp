@@ -19,7 +19,9 @@
 <script type="text/javascript" src="${ctx}/js/alert/g_alert.js?1=1"></script>
 <script type="text/javascript" src="${ctx}/js/util/common.js?1=1"></script>
 <script type="text/javascript" src="${ctx}/js/My97DatePicker/WdatePicker.js" ></script>
-
+<style>
+	.lh58 {line-height:59px;}
+</style>
 
 <script type="text/javascript">
 
@@ -150,7 +152,7 @@ $(document).ready(function(){
         <div class="box fn-clear">
             <span><img src="${ctx}/css/images/logo11.png" width="230" height="60"></span>
            
-            <div class="fr lh60 hd-txt">
+            <div class="fr lh58 hd-txt">
                 <div class="message">
                     <a href="#" class="cblue1 msg-wake">消息提醒&nbsp; <img src="${ctx}/css/images/hd-arrow.png">
 	                    	<div class="upMessageTask">

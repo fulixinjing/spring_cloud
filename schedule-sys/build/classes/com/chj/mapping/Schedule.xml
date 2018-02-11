@@ -19,7 +19,7 @@
 	</select>
 	
 	<sql id="where_sql">
-		where 1=1 
+		where 1=1 and user_id =#{userId}
 		<if test="month != null and month !=''">
 			and start_date LIKE '${month}%'
 		</if>
@@ -56,13 +56,14 @@
 		LEFT JOIN SCHEDULE s1 ON s.id = s1.id AND s1.end_date &lt; NOW()
 		LEFT JOIN SCHEDULE s2 ON s.id = s2.id AND s2.start_date &lt; NOW() AND s2.end_date &gt; NOW()
 		LEFT JOIN SCHEDULE s3 ON s.id = s3.id AND s3.start_date &gt; NOW()
-		WHERE s.start_date LIKE '${month}%'
+		WHERE s.start_date LIKE '${month}%' and s.user_id = #{userId}
 	</select>
 	
 	<select id="remind" parameterType="string" resultType="com.chj.model.Schedule">
 		SELECT NAME,start_date startDate
 		FROM SCHEDULE
 		WHERE start_date &lt; NOW() AND start_date &gt; DATE_SUB(NOW(), INTERVAL 1 HOUR) AND remind = '1'
+		and user_id = #{id}
 	</select>
 	<select id="getCount" parameterType="com.chj.model.Schedule" resultType="Map">
 		SELECT  start_date startDate,COUNT(id) count

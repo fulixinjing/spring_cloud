@@ -52,10 +52,12 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping("/personSys")
-	public String personSys(PersonSys personSys,Model model){
+	public String personSys(PersonSys personSys,Model model,HttpServletRequest request){
 		if(StringUtil.isEmpty(personSys.getMonth())){
 			personSys.setMonth(StringUtil.newDate());
 		}
+		Login login = (Login) request.getSession().getAttribute(CommonUtil.LOGIN_TYPE);
+		personSys.setUserId(login.getId());
 		PersonSys personCount = userService.getMonthCount(personSys);
 		personCount.setMonth(personSys.getMonth());
 		model.addAttribute("personSys",personCount);

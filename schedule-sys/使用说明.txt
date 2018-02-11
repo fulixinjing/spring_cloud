@@ -1,0 +1,4 @@
+页面链接：http://localhost:8080/schedule-sys/login
+浏览器：火狐浏览器（其他我没试）
+数据库：mysql 执行 scheduleSys.sql生成数据库
+数据库链接配置： beans.xml文件 （23,24,25行）也可单独提出.properties文件

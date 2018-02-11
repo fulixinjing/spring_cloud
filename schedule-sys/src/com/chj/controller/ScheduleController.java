@@ -45,7 +45,9 @@ public class ScheduleController {
 	 * @return
 	 */
 	@RequestMapping("/now")
-	public String now(Schedule schedule,Model model){
+	public String now(Schedule schedule,Model model,HttpServletRequest request){
+		Login login = (Login) request.getSession().getAttribute(CommonUtil.LOGIN_TYPE);
+		schedule.setUserId(login.getId());
 		Page<Schedule> page = scheduleService.getfindList(schedule);
 		model.addAttribute("page",page);
 		if(StringUtil.notEmpty(schedule.getMonth())){
