@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.creditloanservice</groupId>
+	<artifactId>creditloanservice-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.2.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<mapper-spring-boot-starter-version>1.2.0</mapper-spring-boot-starter-version>
+		<pagehelper-spring-boot-starter-version>1.1.1</pagehelper-spring-boot-starter-version>
+		<druid-spring-boot-starter-version>1.1.0</druid-spring-boot-starter-version>
+		<postgresql-version>9.1-901-1.jdbc4</postgresql-version>
+		<druid-version>1.0.11</druid-version>
+		
+		<!-- dev环境  start-->
+		
+		<!-- eureka 注册中心地址 -->
+		<creditloanservice.eureka.addr.dev>http://localhost:9000/eureka/</creditloanservice.eureka.addr.dev>
+		<!-- 配置中心 -->
+		<creditloanservice.config.addr.dev>http://10.167.200.10/creditLoanService/creditloanservice-config-profile.git</creditloanservice.config.addr.dev>
+		<creditloanservice.config.git.username.dev>wenlonghuo</creditloanservice.config.git.username.dev>
+		<creditloanservice.config.git.password.dev>ThomasHuo5</creditloanservice.config.git.password.dev>
+		<creditloanservice.config.lable.dev>master</creditloanservice.config.lable.dev>
+		<creditloanservice.config.profile.dev>dev</creditloanservice.config.profile.dev>
+		<creditloanservice.config.application.name.dev>cls-config-server</creditloanservice.config.application.name.dev>
+		<creditloanservice.config.profile.name.dev>creditloanservice-application</creditloanservice.config.profile.name.dev>
+		<!-- dev环境  end -->
+	</properties>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Dalston.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!--mapper -->
+			<dependency>
+				<groupId>tk.mybatis</groupId>
+				<artifactId>mapper-spring-boot-starter</artifactId>
+				<version>${mapper-spring-boot-starter-version}</version>
+			</dependency>
+
+			<!--pagehelper -->
+			<dependency>
+				<groupId>com.github.pagehelper</groupId>
+				<artifactId>pagehelper-spring-boot-starter</artifactId>
+				<version>${pagehelper-spring-boot-starter-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid-spring-boot-starter</artifactId>
+				<version>${druid-spring-boot-starter-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>${druid-version}</version>
+			</dependency>
+
+			<!-- <dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-devtools</artifactId>
+				<optional>true</optional>
+			</dependency> -->
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- 设定主仓库，按设定顺序进行查找。 -->
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>Team Nexus Repository</name>
+			<url>http://10.167.210.239:8081/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<name>snapshots Repository</name>
+			<url>http://10.167.210.239:8081/nexus/content/repositories/snapshots</url>
+		</repository>
+		<repository>
+			<id>3rd</id>
+			<name>3rd party Repository</name>
+			<url>http://10.167.210.239:8081/nexus/content/repositories/thirdparty</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>

@@ -1,0 +1,14 @@
+#eureka.client.serviceUrl.defaultZone=http://localhost:9000/eureka/
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: @creditloanservice.eureka.addr@
+#spring.cloud.config.uri=http://localhost:9008/
+spring:
+  cloud:
+    config:
+      discovery:
+        service-id: @creditloanservice.config.application.name@
+        enabled: true 
+      name: @creditloanservice.config.profile.name@
+      profile: @creditloanservice.config.profile@

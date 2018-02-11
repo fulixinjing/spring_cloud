@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.creditloanservice.example.mapper.ContractTempDao" >
+  <resultMap id="BaseResultMap" type="com.creditloanservice.example.model.ContractTemp" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="apply_id" property="applyId" jdbcType="VARCHAR" />
+    <result column="contract_code" property="contractCode" jdbcType="VARCHAR" />
+    <result column="loan_code" property="loanCode" jdbcType="VARCHAR" />
+    <result column="contract_due_day" property="contractDueDay" jdbcType="TIMESTAMP" />
+    <result column="contract_fact_day" property="contractFactDay" jdbcType="TIMESTAMP" />
+    <result column="contract_replay_day" property="contractReplayDay" jdbcType="TIMESTAMP" />
+    <result column="contract_end_day" property="contractEndDay" jdbcType="TIMESTAMP" />
+    <result column="class_type" property="classType" jdbcType="VARCHAR" />
+    <result column="product_type" property="productType" jdbcType="VARCHAR" />
+    <result column="audit_amount" property="auditAmount" jdbcType="NUMERIC" />
+    <result column="contract_months" property="contractMonths" jdbcType="INTEGER" />
+    <result column="mid_id" property="midId" jdbcType="VARCHAR" />
+    <result column="dict_repay_method" property="dictRepayMethod" jdbcType="VARCHAR" />
+    <result column="contract_amount" property="contractAmount" jdbcType="NUMERIC" />
+    <result column="contract_expect_amount" property="contractExpectAmount" jdbcType="NUMERIC" />
+    <result column="contract_month_repay_amount" property="contractMonthRepayAmount" jdbcType="NUMERIC" />
+    <result column="dict_check_status" property="dictCheckStatus" jdbcType="VARCHAR" />
+    <result column="contract_back_result" property="contractBackResult" jdbcType="VARCHAR" />
+    <result column="contract_version" property="contractVersion" jdbcType="VARCHAR" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_by" property="modifyBy" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="doc_id" property="docId" jdbcType="VARCHAR" />
+    <result column="audit_count" property="auditCount" jdbcType="INTEGER" />
+    <result column="back_flag" property="backFlag" jdbcType="VARCHAR" />
+    <result column="isobsolete" property="isobsolete" jdbcType="VARCHAR" />
+    <result column="cobo_name" property="coboName" jdbcType="VARCHAR" />
+    <result column="cobo_cert_num" property="coboCertNum" jdbcType="VARCHAR" />
+    <result column="loan_name" property="loanName" jdbcType="VARCHAR" />
+    <result column="loan_cert_num" property="loanCertNum" jdbcType="VARCHAR" />
+    <result column="channel_flag" property="channelFlag" jdbcType="VARCHAR" />
+    <result column="contract_month_repay_total" property="monthPayTotalAmount" jdbcType="NUMERIC" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="legal_man" property="legalMan" jdbcType="VARCHAR" />
+    <result column="maddress" property="maddress" jdbcType="VARCHAR" />
+    <result column="model" property="model" jdbcType="VARCHAR" />
+    <result column="is_register" property="isRegister" jdbcType="VARCHAR" />
+    <result column="paperless_flag" property="paperLessFlag" jdbcType="VARCHAR" />
+    <result column="settle_cause" property="settleCause" jdbcType="VARCHAR" />
+    <result column="settle_cause_else" property="settleCauseElse" jdbcType="VARCHAR" />
+    <result column="protocol_id" property="protocolId" jdbcType="VARCHAR" />
+    <result column="dict_source_type" property="dictSourceType" jdbcType="VARCHAR" />
+    <result column="dict_source_type_pcl" property="dictSourceTypePcl" jdbcType="VARCHAR" />
+    <result column="credit_id" property="creditId" jdbcType="VARCHAR" />
+    <result column="contract_history_version" property="contractHistoryVersion" jdbcType="VARCHAR" />
+    <result column="revisit_status" property="revisitStatus" jdbcType="VARCHAR" />
+    <result column="revisit_reason" property="revisitReason" jdbcType="VARCHAR" />
+    <result column="push_time" property="pushTime" jdbcType="TIMESTAMP" />
+    <result column="push_number" property="pushNumber" jdbcType="INTEGER" />
+    <result column="auditing_by" property="auditingBy" jdbcType="VARCHAR" />
+    <result column="auditing_time" property="auditingTime" jdbcType="TIMESTAMP" />
+    <result column="lender" property="lender" jdbcType="VARCHAR" />
+    <result column="new_flag" property="newFlag" jdbcType="VARCHAR" />
+    <result column="isreceive" property="isreceive" jdbcType="VARCHAR" /> 
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, apply_id, contract_code, loan_code, contract_due_day, contract_fact_day, contract_replay_day, 
+    contract_end_day, class_type, product_type, audit_amount, contract_months, mid_id, 
+    dict_repay_method, contract_amount, contract_expect_amount, contract_month_repay_amount, 
+    dict_check_status, contract_back_result, contract_version, create_by, create_time, 
+    modify_by, modify_time, doc_id, audit_count, back_flag, isobsolete, cobo_name, cobo_cert_num, 
+    loan_name, loan_cert_num, channel_flag, contract_month_repay_total, company_name, 
+    legal_man, maddress, model, is_register, paperless_flag, settle_cause, settle_cause_else, 
+    protocol_id, dict_source_type, dict_source_type_pcl, credit_id, contract_history_version, 
+    revisit_status, revisit_reason, push_time, push_number, auditing_by, auditing_time, 
+    lender, new_flag,isreceive
+  </sql>
+  <select id="selectByContractCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from jk.t_jk_contract_temp
+    where contract_code = #{contractCode,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAllInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from jk.t_jk_contract_temp
+   
+  </select>
+  
+   <update id="updateByPrimaryKey" parameterType="com.creditloanservice.example.model.ContractTemp">
+   	update t_jk_contract_temp set push_number = #{pushNumber} where id = #{id}
+   </update>
+   
+
+ 
+</mapper>
