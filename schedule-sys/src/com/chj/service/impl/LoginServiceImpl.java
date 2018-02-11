@@ -23,5 +23,11 @@ public class LoginServiceImpl implements LoginService{
 		
 		return loginDao.getUser(login);
 	}
+	
+	@Override
+	public void addUser(Login login) {
+		loginDao.addUser(login);
+	}
+
 
 }

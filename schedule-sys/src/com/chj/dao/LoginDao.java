@@ -6,4 +6,6 @@ public interface LoginDao {
 
 	Login getUser(Login login);
 
+	void addUser(Login login);
+
 }

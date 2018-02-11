@@ -25,5 +25,10 @@ public class LoginDaoImpl implements LoginDao{
 		return (Login)sqlSession.selectOne("login.getUser",login);
 	}
 
+	@Override
+	public void addUser(Login login) {
+		sqlSession.insert("login.addUser",login);
+	}
+
 	
 }

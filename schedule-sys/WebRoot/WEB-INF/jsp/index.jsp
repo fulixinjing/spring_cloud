@@ -164,7 +164,6 @@ $(document).ready(function(){
                             <a href="javascript:(void);" class="mm-close fr"></a>
                         </div>
 	                        <ul id="ulId">
-									<li><a href="javascript:(void);" onclick="goingPage(${message.id})" >你好你好</a></li>
 	                        </ul>
 		                    <div class="txt-r pd-t10 pd-b10" id="allIgnore"><a href="javascript:(void);" class="cblue2 hl-msg" onclick="upMessage()">忽略全部</a></div>
                         
@@ -173,7 +172,7 @@ $(document).ready(function(){
                 <div class="mg-l35 gly">
                     <a href="javascript:(void);" class="cblue1 gly-wake">
                     <img style="width: 50px;height: 50px;border-radius: 50%;" src="${ctx}/images/tou_xiang.png">
-                    	常慧娟
+                    	${login.name}
                     		<img src="${ctx}/css/images/hd-arrow.png"></a>
                     <div class="zhxx-box hide">
                         <div class="xx-arrow"></div>
@@ -183,8 +182,8 @@ $(document).ready(function(){
                         </div>
                         <ul>
                             <li>
-                                <p>XXXX</p>
-                                <p style="width:228px;word-break:break-all; word-wrap:break-word ;">XXXXXXXX</p>
+                                <p>${login.username}</p>
+                                <p style="width:228px;word-break:break-all; word-wrap:break-word ;">${login.email}</p>
                             </li>
                         </ul>
                         <div class="txt-c pd-t10 pd-b10">

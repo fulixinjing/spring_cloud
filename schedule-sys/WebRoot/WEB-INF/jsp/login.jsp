@@ -12,8 +12,19 @@
 <script type="text/javascript" src="${ctx}/js/static/jquery/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/static/jquery/jquery.cookie.js"></script>
 <script type="text/javascript" src="${ctx}/js/util/common.js"></script>
+<script type="text/javascript" src="${ctx}/js/alert/g_alert.js?1=1"></script>
+<script type="text/javascript">
+	if(window!=top){
+ 		window.parent.location.href="${ctx}/login";
+	}
+</script>
 </head>  
-
+<style>
+.zc-box {
+	width:318px;
+	height:400px;
+}
+</style>
 <body style="overflow-y: auto;">
 
 <div class="header" style="background:#fff;">
@@ -23,16 +34,16 @@
     	</div>
     </div>
 
-    <div class="login-box">
+    <div class="login-box" id="login">
     	<div class="login-img">
         <div class="wd760">
           <div class="sr-box fr mg-t65">
             <h2>用户登录：</h2>
-            ${message}
+           <span style="color: red;">${message}</span> 
             <form action="${ctx}/login" method="post" id="form1">
             <ul class="mg-l29">
               <li class="fn-clear mg-t35">
-                <input id="username" name="username" type="text" placeholder="用户名" value="${login.username}" onclick="focusMeByAll(this,'');" onblur="blurMeByAll(this,''),validateXml1(this);" maxlength="35" class="fl srk">
+                <input id="username" name="username" type="text"  placeholder="用户名" value="${login.username}" onclick="focusMeByAll(this,'');" onblur="blurMeByAll(this,''),validateXml1(this);" maxlength="35" class="fl srk">
               </li>
               <li class="fn-clear mg-t35">
                <input id="password" name="password" type="password" placeholder="密   码" value="" onclick="focusMeByAll(this,'');" onblur="blurMeByAll(this,''),validateXml1(this);" maxlength="35" class="fl srk1">
@@ -40,11 +51,46 @@
               <li class="fn-clear mg-t35" style="border:none;">
                 <span class="fl cgray1"><input name="ck_auto" id="ck_auto" type="checkbox" value="1" onclick="SaveAuto()"  class="vt-t">&nbsp;自动登录</span>
                 <span class="fl cgray1 mg-l20"><input name="ck_rmbUser2" id="ck_rmbUser2" onclick="Save()"  type="checkbox" value="" class="vt-t">&nbsp;记住密码</span>
+               	<span class="fl cgray1" style="float: right;"> <a href="javascript:void(0)" onclick="goRegister()">>>去注册</a></span>
                 <input name="ck_rmbUser" id="ck_rmbUser"  value=""  type="hidden" class="vt-t">
               </li>
             </ul>
             <div class="txt-c mg-t15">
              <input class="login-button" type="submit" value="登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录" />
+             
+            </div>
+            </form>
+          </div>
+        </div>
+    		
+    	</div>
+    </div>
+    <div class="login-box" id="register" style="display: none;">
+    	<div class="login-img">
+        <div class="wd760">
+          <div class="zc-box sr-box fr mg-t65">
+            <h2>用户注册：</h2>
+           <span style="color: red;height: 100px" id="msg" ></span> 
+            <form action="${ctx}/login/register" method="post" id="form2">
+            <ul class="mg-l29">
+              <li class="fn-clear mg-t35">
+                	<input id="" name="name" type="text" placeholder="姓名" onblur="validate(this);" maxlength="35" class="fl srk"/>
+              </li>
+              <li class="fn-clear mg-t35">
+                <input id="" name="email" type="text" placeholder="邮箱" value=""  onblur="validate(this);" maxlength="35" class="fl srk">
+              </li>
+              <li class="fn-clear mg-t35">
+                <input id="" name="username" type="text" placeholder="登陆名" value=""  onblur="validate(this);" maxlength="35" class="fl srk">
+              </li>
+              <li class="fn-clear mg-t35">
+               <input id="password1" name="password" type="password" placeholder="密码" value=""  onblur="validate(this);" maxlength="35" class="fl srk1">
+              </li>
+              <li class="fn-clear mg-t35">
+               <input id="password2" name="qrpassword" type="password" placeholder="确认密码" value=""  onblur="validate(this);" maxlength="35" class="fl srk1">
+              </li>
+            </ul>
+            <div class="txt-c mg-t15">
+             <input type = "button" class="login-button" id="registerBtn" value="注&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;册" />
              
             </div>
             </form>
@@ -134,5 +180,52 @@
 	}
 	function SaveAuto() {
 	}
+	function goRegister(){
+		$('#login').hide();
+		$('#register').show();
+		$('.zc-box').height(450);
+		$(":input[placeholder]").each(function(){
+			$(this).val("");
+		});
+	}
+	function validate(type){
+		$("#msg").text("");
+		if($(type).val() == ""){
+			$("#msg").text($(type).attr('placeholder')+"不能为空！");
+			return false;
+		}else if($("#password1").val()!="" && $("#password2").val()!="" && $("#password1").val() != $("#password2").val()){
+			$("#msg").text("两次密码不一样，请重新输入！");
+			return false;
+		}
+		return true; 
+	}
+	$('#registerBtn').click(function(){
+		//遍历 id为form2 下 所有包含placeholder属性的input
+		$('#form2 :input[placeholder]').each(function(){
+			if(validate(this)==false){
+				return false;
+			}
+		});
+		if($("#msg").text() ==""){
+			$.ajax({
+				type:"POST",
+				url:"${ctx}/login/register",
+				data: $('#form2').serialize(),
+				dataType:"text",
+				async:false, //false 同步 
+				success:function(data){
+					if(data =='true'){
+						g_alert('success','注册成功!','${ctx}/login',"${ctx}"); 
+					}else if(data =='1'){
+						$("#msg").text("登陆名已存在！");
+					}
+				},
+				error:function(e){
+					alert("系统异常");
+				}
+				
+			});
+		}
+	})
 	
 </script>

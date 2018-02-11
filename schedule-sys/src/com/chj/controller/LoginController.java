@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.chj.model.Login;
 import com.chj.service.LoginService;
@@ -49,6 +50,7 @@ public class LoginController {
 			return "login";
 		}else{
 			request.getSession().setAttribute(CommonUtil.LOGIN_TYPE, user);
+			model.addAttribute("login",user);
 			return "index";
 		}
 		
@@ -64,5 +66,22 @@ public class LoginController {
 		
 		request.getSession().removeAttribute(CommonUtil.LOGIN_TYPE);
 		return "login";
+	}
+	/**
+	 * 注册
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/register")
+	public String register(Login login,HttpServletRequest request,HttpServletResponse response){
+		login.setPassword(StringUtil.MD5String(login.getPassword()));//密码加密
+		Login user = loginService.getUser(login);
+		if(user != null){
+			return "1";
+		}
+		loginService.addUser(login);
+		return "true";
 	}
 }

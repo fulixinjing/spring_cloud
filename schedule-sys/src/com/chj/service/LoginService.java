@@ -6,4 +6,6 @@ public interface LoginService {
 
 	Login getUser(Login login);
 
+	void addUser(Login login);
+
 }
