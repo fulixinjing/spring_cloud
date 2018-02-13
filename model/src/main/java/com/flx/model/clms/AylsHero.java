@@ -1,4 +1,4 @@
-package com.flx.model.clms;
+﻿package com.flx.model.clms;
 
 public class AylsHero extends Hero{
 
@@ -8,7 +8,7 @@ public class AylsHero extends Hero{
 	
 	@Override
 	public void heroPrologue() {
-		System.out.println("想攻击我，先试试和影子玩拳击吧");
+		System.out.println("想攻击我，先试试和影子玩拳击吧!");
 	}
 
 }
