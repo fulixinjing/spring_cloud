@@ -5,7 +5,7 @@ package com.flx.model.clms;
  * @author flx
  *
  */
-public abstract class Hero {
+public abstract class Hero{
 	
 	//英雄名字
 	public String heroName;
