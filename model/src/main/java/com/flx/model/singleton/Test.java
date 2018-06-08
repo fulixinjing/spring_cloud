@@ -3,7 +3,7 @@ package com.flx.model.singleton;
 public class Test {
 	public static void main(String[] args) {
 		Singleton1.getSingleton();
-		Singleton2.getSingleton();
+		Singleton2.getSingleton1();
 		//使用场景：
 		//● 要求生成唯一序列号的环境；
 		//● 在整个项目中需要一个共享访问点或共享数据，例如一个Web页面上的计数器，可以不用把每次刷新都记录到数据库中，使用单例模式保持计数器的值，并确保是线程安全的；

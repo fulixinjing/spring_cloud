@@ -8,6 +8,7 @@ import com.flx.model.clms.Hero;
 import com.flx.model.clms.HeroUtil;
 import com.flx.model.clms.Iskill;
 import com.flx.model.clms.SkillUtil;
+import com.flx.staticHtml.StaticHtml;
 
 /**策略模式
  * 策略模式的决定权在用户，系统本身提供不同算法的实现，新增或者删除算法，对各种算法做封装。
@@ -26,6 +27,13 @@ public class LOL {
 		model.addAttribute("skill",SkillUtil.nameMap);
 		
 		return "toLol";
+	}
+	@RequestMapping("/toLol1")
+	public void toLol1(Model model){
+		
+		new StaticHtml().statusThread();
+		
+		
 	}
 	@RequestMapping("/yxsx")
 	public String yxsx(Model model,String yx,String jn) throws Exception{

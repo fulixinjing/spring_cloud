@@ -1,3 +1,4 @@
+<%@page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -16,6 +17,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<%= new Date().getTime() %>
     <form id="subform" action="">
 		<table align="center">
 			<tr>

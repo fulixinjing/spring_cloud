@@ -5,6 +5,10 @@ package com.flx.model.singleton;
  *
  */
 public class Singleton1 {
+	
+	private Singleton1(){
+		
+	}
 
 	private static final Singleton1 SINGLETON1=new Singleton1();
 	
