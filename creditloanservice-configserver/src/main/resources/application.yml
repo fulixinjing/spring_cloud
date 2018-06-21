@@ -1,0 +1,22 @@
+server:
+  port: 9008
+spring:
+  application:
+    name: cls-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: @creditloanservice.config.addr@
+          username: @creditloanservice.config.git.username@
+          password: @creditloanservice.config.git.password@
+#     label=master
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: @creditloanservice.eureka.addr@
+#\u914d\u7f6e\u767b\u5f55\u5bc6\u7801
+#security.basic.enabled=false
+#security.user.name=admin
+#security.user.password=admin
