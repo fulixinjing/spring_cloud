@@ -4,7 +4,7 @@
   	<description></description>
   	<display-name>DispatcherServlet</display-name>
   	<servlet-name>DispatcherServlet</servlet-name>
-  	<servlet-class>my.spring.DispatcherServlet</servlet-class>
+  	<servlet-class>my.spring.servlet.DispatcherServlet</servlet-class>
   	<load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>

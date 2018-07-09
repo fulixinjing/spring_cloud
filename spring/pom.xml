@@ -32,6 +32,41 @@
 	   <version>3.0.1</version> 
 	   <scope>provided</scope>
 	</dependency>
+	
+	<!-- jetty begin -->
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jsp-2.1-jetty</artifactId>
+			<version>6.1.24</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+			<version>6.1.26</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>6.1.26</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- jetty end -->
+		
+		<dependency>
+		    <groupId>org.clojure</groupId>
+		    <artifactId>java.jdbc</artifactId>
+		    <version>0.7.7</version>
+		</dependency>
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <version>6.0.2</version>
+		</dependency>
+
   </dependencies>
 
   <build>

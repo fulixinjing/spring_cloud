@@ -1,4 +1,4 @@
-package my.spring;
+package my.spring.servlet;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,27 @@ public class DispatcherServlet extends HttpServlet {
     }
 	private void classFile(String path) throws Exception {
 		String pathUrl = path.replace(".", "/");
-		URL url=getClass().getClassLoader().getResource("/"+pathUrl);
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		Enumeration<URL> urls = loader.getResources(pathUrl);
+		while(urls.hasMoreElements()) {
+			String url=urls.nextElement().getFile();
+			File file = new File(url);
+			File[] listFiles = file.listFiles();
+			for (File file2 : listFiles) {
+				//判断是不是目录
+				if(file2.isDirectory()){
+					classFile(path+"."+file2.getName());
+				}else{
+					if(file2.getName().endsWith(".class")){
+						
+						cls.add(path+"."+file2.getName());
+						System.out.println(path+"."+file2.getName());
+					}
+				}
+				
+			}
+		}
+		/*URL url=getClass().getClassLoader().getResource("/"+pathUrl);
 		File file = new File(url.getFile());
 		File[] listFiles = file.listFiles();
 		for (File file2 : listFiles) {
@@ -69,7 +90,7 @@ public class DispatcherServlet extends HttpServlet {
 				}
 			}
 			
-		}
+		}*/
 	}
 	private void classInstance() throws Exception {
 		if(cls.isEmpty()){
