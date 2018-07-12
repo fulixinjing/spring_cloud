@@ -10,8 +10,8 @@ public class MySqlSession {
 		return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(),new Class[] {cls},new MapperProxy<>(this, cls));
 	}
 
-	public <T> T selectOne(String sql, Object args) {
-		return executor.query(sql,args);
+	public <T> T selectOne(MapperData mapperData, Object args) {
+		return executor.query(mapperData,args);
 	}
 
 }

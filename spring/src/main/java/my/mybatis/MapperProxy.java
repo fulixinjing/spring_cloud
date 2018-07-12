@@ -18,11 +18,15 @@ public class MapperProxy<T> implements InvocationHandler{
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		if(clazz.getName().equals(MyBatisConfiguration.nameSpace)) {
-			String sql = MyBatisConfiguration.methodSqlMapping.get(method.getName());
-			System.out.println(sql);
-			return sqlSession.selectOne(sql,args);
+		System.out.println(method.getDeclaringClass().getName()+"."+method.getName());
+		MapperRegistory mrRegistory=new MapperRegistory();
+		MapperData mapperData = mrRegistory.METHOD_SQL.get(method.getDeclaringClass().getName()+"."+method.getName());
+		if(mapperData !=null){
+			System.out.println(String.format("SQL [%s],parameter [%s]", mapperData.getSql(),args[0]));
+			Object selectOne = sqlSession.selectOne(mapperData, args);
+			return selectOne;
 		}
+		
 		return null;
 	}
 

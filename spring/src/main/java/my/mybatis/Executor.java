@@ -2,6 +2,6 @@ package my.mybatis;
 
 public interface Executor {
 
-	<E> E query(String sql, Object args);
+	<E> E query(MapperData mapperData, Object args);
 
 }

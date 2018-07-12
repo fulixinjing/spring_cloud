@@ -1,15 +1,20 @@
 package my.spring.servlet;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,8 +22,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import my.mybatis.MapperProxy;
+import my.mybatis.MySqlSession;
 import my.spring.annotation.Autowired;
 import my.spring.annotation.Controller;
+import my.spring.annotation.Mapper;
 import my.spring.annotation.RequestMapping;
 import my.spring.annotation.Service;
 
@@ -33,6 +41,7 @@ public class DispatcherServlet extends HttpServlet {
 	List<String> cls = new ArrayList<String>();
 	Map<String,Object> obj =new HashMap<String,Object>();
 	Map<String,Object> handerMethod =new HashMap<String,Object>();
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -43,13 +52,17 @@ public class DispatcherServlet extends HttpServlet {
     public void init() throws ServletException {
     	try{
 	    	//1.扫描包
-	    	classFile("my.spring");
+	    	classFile("my");
 	    	//2.实例化类
 	    	classInstance();
 	    	//3.依赖注入
 	    	inject();
 	    	//4.处理映射
 	    	handlerMapping();
+	    	
+	    	//mybatis 映射xml
+	    	xmlFile("mapper");
+	    	
     	}catch(Exception e){
     		e.printStackTrace();
     	}
@@ -76,28 +89,13 @@ public class DispatcherServlet extends HttpServlet {
 				
 			}
 		}
-		/*URL url=getClass().getClassLoader().getResource("/"+pathUrl);
-		File file = new File(url.getFile());
-		File[] listFiles = file.listFiles();
-		for (File file2 : listFiles) {
-			//判断是不是目录
-			if(file2.isDirectory()){
-				classFile(path+"."+file2.getName());
-			}else{
-				if(file2.getName().endsWith(".class")){
-					
-					cls.add(path+"."+file2.getName());
-				}
-			}
-			
-		}*/
 	}
 	private void classInstance() throws Exception {
 		if(cls.isEmpty()){
 			System.out.println("空类");
 		}else{
-			for (String cls : cls) {
-				String clsName = cls.substring(0, cls.length()-6);
+			for (String cls1 : cls) {
+				String clsName = cls1.substring(0, cls1.length()-6);
 				Class<?> clazz = Class.forName(clsName);
 				//判断类上是否有controller注解
 				if(clazz.isAnnotationPresent(Controller.class)){
@@ -114,6 +112,12 @@ public class DispatcherServlet extends HttpServlet {
 					}else{
 						obj.put(service.value(), newInstance);
 					}
+				}else if(clazz.isAnnotationPresent(Mapper.class)){
+					String name =clazz.getSimpleName();
+					name = name.replaceFirst(name.substring(0, 1),name.substring(0, 1).toLowerCase());
+					//TODO MyBatis 需要优化
+					Object newInstance=Proxy.newProxyInstance(clazz.getClassLoader(),new Class[] {clazz},new MapperProxy(new MySqlSession(), clazz));
+					obj.put(name, newInstance);
 				}
 				
 			}
@@ -165,6 +169,36 @@ public class DispatcherServlet extends HttpServlet {
 				}
 			}
 		}
+	}
+	private void xmlFile(String path) {
+		String url = path.replace(".", "/");
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		try {
+			Enumeration<URL> resources = classLoader.getResources(url);
+			
+			while(resources.hasMoreElements()){
+				String fileUrl = resources.nextElement().getFile();
+				File file =new File(fileUrl);
+				File[] listFiles = file.listFiles();
+				for (File file2 : listFiles) {
+					if(file2.isDirectory()){//是目录
+						xmlFile(path+"."+file2.getName());
+					}else{
+						System.out.println(file2.getPath());
+						
+						 InputStream openStream = new FileInputStream(file2);
+						 Properties properties =new Properties();
+						 properties.load(openStream);
+						 for(Entry e: properties.entrySet()){
+							 System.out.println(e.getKey()+"===="+e.getValue());
+						 }
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
